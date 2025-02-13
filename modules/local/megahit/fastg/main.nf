@@ -26,6 +26,11 @@ process MEGAHIT_FASTG {
         ${args} \\
         > ${prefix}.fastg
 
+    if [ ! -s ${prefix}.fastg ]; then
+        echo "ERROR: Failed to generate FASTG file (probably due to insufficient contig overlaps)"
+        exit 1
+    fi
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         megahit_toolkit: \$(megahit_toolkit dumpversion)
