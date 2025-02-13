@@ -3,9 +3,16 @@
     IMPORT MODULES / SUBWORKFLOWS / FUNCTIONS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-include { paramsSummaryMap       } from 'plugin/nf-schema'
-include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_charybdis_pipeline'
+include { paramsSummaryMap                              } from 'plugin/nf-schema'
+include { softwareVersionsToYAML                        } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { methodsDescriptionText                        } from '../subworkflows/local/utils_nfcore_charybdis_pipeline'
+
+include { ONT_ASSEMBLY                                  } from '../subworkflows/local/ont_assembly/main'
+include { ILLUMINA_ASSEMBLY as ILLUMINA_ASSEMBLY_PAIRED } from '../subworkflows/local/illumina_assembly/main'
+include { ILLUMINA_ASSEMBLY as ILLUMINA_ASSEMBLY_SINGLE } from '../subworkflows/local/illumina_assembly/main'
+
+include { METABAT2_METABAT2                             } from '../modules/nf-core/metabat2/metabat2/main'
+include { BANDAGE_IMAGE                                 } from '../modules/nf-core/bandage/image/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -14,12 +21,41 @@ include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_char
 */
 
 workflow CHARYBDIS {
-
     take:
-    ch_samplesheet // channel: samplesheet read in from --input
+    ch_samplesheet
+
     main:
 
     ch_versions = Channel.empty()
+
+    // Run the appropriate assembly pipeline for the platform
+    ch_input = ch_samplesheet.branch { _id, platform, _fastq_1, _fastq_2 ->
+        ont: platform == "ont"
+        illumina: platform == "illumina"
+        illumina_se: platform == "illumina.se"
+    }
+
+    ONT_ASSEMBLY(ch_input.ont)
+    ch_versions = ch_versions.mix(ONT_ASSEMBLY.versions.first())
+
+    ILLUMINA_ASSEMBLY_PAIRED(ch_input.illumina)
+    ch_versions = ch_versions.mix(ILLUMINA_ASSEMBLY_PAIRED.versions.first())
+
+    ILLUMINA_ASSEMBLY_SINGLE(ch_input.illumina_se)
+    ch_versions = ch_versions.mix(ILLUMINA_ASSEMBLY_SINGLE.versions.first())
+
+    ch_contigs = ONT_ASSEMBLY.out.contigs.mix(ILLUMINA_ASSEMBLY_PAIRED.out.contigs, ILLUMINA_ASSEMBLY_SINGLE.out.contigs)
+    ch_graph = ONT_ASSEMBLY.out.gfa.mix(ILLUMINA_ASSEMBLY_PAIRED.out.fastg, ILLUMINA_ASSEMBLY_SINGLE.out.fastg)
+
+    // Generate a Bandage image of the assembly graph (it says it requires GFA but works fine with fastg)
+    BANDAGE_IMAGE(
+        ch_graph
+    )
+
+    // Bin the contigs with metabat2
+    METABAT2_METABAT2(
+        ch_contigs.map { meta, contigs -> [meta, contigs, [:]] }
+    )
 
     //
     // Collate and save software versions
@@ -27,19 +63,9 @@ workflow CHARYBDIS {
     softwareVersionsToYAML(ch_versions)
         .collectFile(
             storeDir: "${params.outdir}/pipeline_info",
-            name:  'charybdis_software_'  + 'versions.yml',
+            name: 'charybdis_software_' + 'versions.yml',
             sort: true,
-            newLine: true
-        ).set { ch_collated_versions }
-
-
-    emit:
-    versions       = ch_versions                 // channel: [ path(versions.yml) ]
-
+            newLine: true,
+        )
+        .set { ch_collated_versions }
 }
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    THE END
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
