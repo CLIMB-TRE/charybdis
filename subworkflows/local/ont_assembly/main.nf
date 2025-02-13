@@ -1,9 +1,3 @@
-// TODO nf-core: If in doubt look at other nf-core/subworkflows to see how we are doing things! :)
-//               https://github.com/nf-core/modules/tree/master/subworkflows
-//               You can also ask for help via your pull request or on the #subworkflows channel on the nf-core Slack workspace:
-//               https://nf-co.re/join
-// TODO nf-core: A subworkflow SHOULD import at least two modules
-
 include { FLYE              } from '../../../modules/nf-core/flye/main'
 include { PORECHOP_PORECHOP } from '../../../modules/nf-core/porechop/porechop/main'
 
@@ -34,6 +28,5 @@ workflow ONT_ASSEMBLY {
     reads    = PORECHOP_PORECHOP.out.reads
     contigs  = FLYE.out.fasta
     gfa      = FLYE.out.gfa
-    log      = FLYE.out.log
     versions = ch_versions // channel: [ versions.yml ]
 }
