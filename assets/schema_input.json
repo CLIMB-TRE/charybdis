@@ -22,7 +22,17 @@
                     "ont",
                     "illumina.se"
                 ],
-                "errorMessage": "Platform must be either 'illumina', 'illumina.se' or 'ont'"
+                "errorMessage": "Platform must be either 'illumina', 'illumina.se' or 'ont'",
+                "meta": [
+                    "platform"
+                ]
+            },
+            "single_end": {
+                "type": "boolean",
+                "errorMessage": "Single end must be a boolean",
+                "meta": [
+                    "single_end"
+                ]
             },
             "fastq_1": {
                 "type": "string",

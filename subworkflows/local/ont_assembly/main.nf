@@ -9,10 +9,8 @@ workflow ONT_ASSEMBLY {
 
     ch_versions = Channel.empty()
 
-    ch_fastq = ch_input.map { meta, platform, fastq_1, _fastq_2 -> [[id: meta.id, platform: platform, single_end: true], fastq_1] }
-
     PORECHOP_PORECHOP(
-        ch_fastq
+        ch_input
     )
     ch_versions = ch_versions.mix(PORECHOP_PORECHOP.out.versions.first())
 
