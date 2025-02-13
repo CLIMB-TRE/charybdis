@@ -12,7 +12,7 @@ workflow ILLUMINA_ASSEMBLY {
     MEGAHIT(ch_input)
     ch_versions = ch_versions.mix(MEGAHIT.out.versions.first())
 
-    MEGAHIT_FASTG(MEGAHIT.out.kfinal_contigs)
+    MEGAHIT_FASTG(MEGAHIT.out.k_contigs)
     ch_versions = ch_versions.mix(MEGAHIT_FASTG.out.versions.first())
 
     emit:
