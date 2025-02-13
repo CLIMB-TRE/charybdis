@@ -22,7 +22,7 @@ process MEGAHIT_FASTG {
     """
     megahit_toolkit contig2fastg \\
         ${params.bandage_kmer_size} \\
-        k${params.bandage_kmer_size}.contigs.fa \\
+        k${params.bandage_kmer_size}.* \\
         ${args} \\
         > ${prefix}.fastg
 
