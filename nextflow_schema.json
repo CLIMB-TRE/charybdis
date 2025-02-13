@@ -53,7 +53,7 @@
                 "bandage_kmer_size": {
                     "type": "integer",
                     "description": "Which MEGAHIT kmer size to use for the bandage assembly graph.",
-                    "default": 21
+                    "default": 27
                 }
             }
         },
