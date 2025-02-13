@@ -29,11 +29,13 @@ workflow CHARYBDIS {
     ch_versions = Channel.empty()
 
     // Run the appropriate assembly pipeline for the platform
-    ch_input = ch_samplesheet.branch { meta, _fastq_1, _fastq_2 ->
-        ont: meta.platform == "ont"
-        illumina: meta.platform == "illumina"
-        illumina_se: meta.platform == "illumina.se"
-    }
+    ch_samplesheet
+        .branch { meta, _fastq_1, _fastq_2 ->
+            ont: meta.platform == "ont"
+            illumina: meta.platform == "illumina"
+            illumina_se: meta.platform == "illumina.se"
+        }
+        .set { ch_input }
 
     ONT_ASSEMBLY(ch_input.ont)
     ch_versions = ch_versions.mix(ONT_ASSEMBLY.out.versions.first())
