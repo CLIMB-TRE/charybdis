@@ -27,13 +27,6 @@
                     "platform"
                 ]
             },
-            "single_end": {
-                "type": "boolean",
-                "errorMessage": "Single end must be a boolean",
-                "meta": [
-                    "single_end"
-                ]
-            },
             "fastq_1": {
                 "type": "string",
                 "format": "file-path",
