@@ -1,4 +1,4 @@
-sample,platform,single_end,fastq_1,fastq_2
-SAMPLE_PAIRED_END,illumina,false,/path/to/fastq/files/AEG588A1_S1_L002_R1_001.fastq.gz,/path/to/fastq/files/AEG588A1_S1_L002_R2_001.fastq.gz
-SAMPLE_SINGLE_END,illumina.se,true,/path/to/fastq/files/AEG588A4_S4_L003_R1_001.fastq.gz,
-SAMPLE_ONT,ont,true,/path/to/fastq/files/FBA12345_pass_barcode01_97cfgs4e_d559dc20_0.fastq.gz,
+sample,platform,fastq_1,fastq_2
+SAMPLE_PAIRED_END,illumina,/path/to/fastq/files/AEG588A1_S1_L002_R1_001.fastq.gz,/path/to/fastq/files/AEG588A1_S1_L002_R2_001.fastq.gz
+SAMPLE_SINGLE_END,illumina.se,/path/to/fastq/files/AEG588A4_S4_L003_R1_001.fastq.gz,
+SAMPLE_ONT,ont,/path/to/fastq/files/FBA12345_pass_barcode01_97cfgs4e_d559dc20_0.fastq.gz,
