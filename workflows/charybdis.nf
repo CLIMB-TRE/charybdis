@@ -56,7 +56,7 @@ workflow CHARYBDIS {
 
     // Bin the contigs with metabat2
     METABAT2_METABAT2(
-        ch_contigs.map { meta, contigs -> [meta, contigs, [:]] }
+        ch_contigs.map { meta, contigs -> [meta, contigs, []] }
     )
 
     //
