@@ -36,13 +36,13 @@ workflow CHARYBDIS {
     }
 
     ONT_ASSEMBLY(ch_input.ont)
-    ch_versions = ch_versions.mix(ONT_ASSEMBLY.versions.first())
+    ch_versions = ch_versions.mix(ONT_ASSEMBLY.out.versions.first())
 
     ILLUMINA_ASSEMBLY_PAIRED(ch_input.illumina)
-    ch_versions = ch_versions.mix(ILLUMINA_ASSEMBLY_PAIRED.versions.first())
+    ch_versions = ch_versions.mix(ILLUMINA_ASSEMBLY_PAIRED.out.versions.first())
 
     ILLUMINA_ASSEMBLY_SINGLE(ch_input.illumina_se)
-    ch_versions = ch_versions.mix(ILLUMINA_ASSEMBLY_SINGLE.versions.first())
+    ch_versions = ch_versions.mix(ILLUMINA_ASSEMBLY_SINGLE.out.versions.first())
 
     ch_contigs = ONT_ASSEMBLY.out.contigs.mix(ILLUMINA_ASSEMBLY_PAIRED.out.contigs, ILLUMINA_ASSEMBLY_SINGLE.out.contigs)
     ch_graph = ONT_ASSEMBLY.out.gfa.mix(ILLUMINA_ASSEMBLY_PAIRED.out.fastg, ILLUMINA_ASSEMBLY_SINGLE.out.fastg)

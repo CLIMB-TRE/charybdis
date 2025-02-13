@@ -9,7 +9,7 @@ workflow ILLUMINA_ASSEMBLY {
 
     ch_versions = Channel.empty()
 
-    ch_fastq = ch_input.branch { _id, platform, _fastq_1, _fastq_2 ->
+    ch_fastq = ch_input.branch { _meta, platform, _fastq_1, _fastq_2 ->
         paired: platform == "illumina"
         single: platform == "illumina.se"
     }
@@ -25,10 +25,10 @@ workflow ILLUMINA_ASSEMBLY {
     ch_to_assemble = ch_paired.mix(ch_single)
 
     MEGAHIT(ch_to_assemble)
-    ch_versions = ch_versions.mix(MEGAHIT.versions.first())
+    ch_versions = ch_versions.mix(MEGAHIT.out.versions.first())
 
     MEGAHIT_FASTG(MEGAHIT.out.kfinal_contigs)
-    ch_versions = ch_versions.mix(MEGAHIT_FASTG.versions.first())
+    ch_versions = ch_versions.mix(MEGAHIT_FASTG.out.versions.first())
 
     emit:
     contigs  = MEGAHIT.out.contigs
