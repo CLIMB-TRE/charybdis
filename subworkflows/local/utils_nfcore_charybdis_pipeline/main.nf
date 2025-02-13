@@ -70,10 +70,10 @@ workflow PIPELINE_INITIALISATION {
         .fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input.json"))
         .map { meta, fastq_1, fastq_2 ->
             if (!fastq_2) {
-                return [meta.id, meta + [single_end: true], fastq_1]
+                return [meta.id, meta + [single_end: true], [fastq_1]]
             }
             else {
-                return [meta.id, meta + [single_end: false], fastq_1, fastq_2]
+                return [meta.id, meta + [single_end: false], [fastq_1, fastq_2]]
             }
         }
         .groupTuple()
