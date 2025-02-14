@@ -53,11 +53,13 @@ workflow CHARYBDIS {
     BANDAGE_IMAGE(
         ch_graph
     )
+    ch_versions = ch_versions.mix(BANDAGE_IMAGE.out.versions.first())
 
     // Bin the contigs with metabat2
     METABAT2_METABAT2(
         ch_contigs.map { meta, contigs -> [meta, contigs, []] }
     )
+    ch_versions = ch_versions.mix(METABAT2_METABAT2.out.versions.first())
 
     //
     // Collate and save software versions
