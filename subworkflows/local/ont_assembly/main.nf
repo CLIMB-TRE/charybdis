@@ -19,7 +19,7 @@ workflow ONT_ASSEMBLY {
         ch_trimmed_reads = PORECHOP_PORECHOP.out.reads
     }
     else {
-        ch_trimmed_reads = ch_input.map { meta, fastq_1, _fastq_2 -> [meta, fastq_1]
+        ch_trimmed_reads = ch_input.map { meta, fastq_1, _fastq_2 -> [meta, fastq_1] }
     }
 
 
