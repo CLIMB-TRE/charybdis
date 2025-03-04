@@ -37,7 +37,7 @@ workflow ONT_ASSEMBLY {
     ch_versions = ch_versions.mix(PIGZ_UNCOMPRESS.out.versions.first())
 
     emit:
-    reads    = PORECHOP_PORECHOP.out.reads
+    reads    = ch_trimmed_reads
     contigs  = FLYE.out.fasta
     gfa      = PIGZ_UNCOMPRESS.out.file
     versions = ch_versions // channel: [ versions.yml ]
