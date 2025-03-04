@@ -47,22 +47,28 @@
             "fa_icon": "fas fa-terminal",
             "description": "Parameters which impact how the pipeline runs.",
             "required": [
-                "bandage_kmer_size"
+                "bandage_kmer_size",
+                "ont_assembler"
             ],
             "properties": {
+                "ont_assembler": {
+                    "type": "string",
+                    "description": "Which assembler to use for ONT data.",
+                    "default": "flye",
+                    "enum": [
+                        "flye",
+                        "metaMDBG",
+                        "miniasm"
+                    ]
+                },
                 "bandage_kmer_size": {
                     "type": "integer",
                     "description": "Which MEGAHIT kmer size to use for the bandage assembly graph.",
                     "default": 109
                 },
-                "use_flye": {
-                    "type": "boolean",
-                    "description": "Use Flye for assembly instead of metaMDBG.",
-                    "default": false
-                },
                 "skip_porechop": {
                     "type": "boolean",
-                    "description": "Skip the Porechop adapter trimming step.",
+                    "description": "Skip the Porechop adapter trimming step for ONT data.",
                     "default": false
                 }
             }

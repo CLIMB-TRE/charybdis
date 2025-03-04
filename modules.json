@@ -30,6 +30,16 @@
                         "git_sha": "c912aa8b29a17d6dbec3fdda71185fbe3e77ba59",
                         "installed_by": ["modules"]
                     },
+                    "miniasm": {
+                        "branch": "master",
+                        "git_sha": "81880787133db07d9b4c1febd152c090eb8325dc",
+                        "installed_by": ["modules"]
+                    },
+                    "minimap2/align": {
+                        "branch": "master",
+                        "git_sha": "81880787133db07d9b4c1febd152c090eb8325dc",
+                        "installed_by": ["modules"]
+                    },
                     "pigz/uncompress": {
                         "branch": "master",
                         "git_sha": "c70357ea249a541df53dd5b479b3c32b0c26c4d2",
@@ -41,6 +51,11 @@
                         "installed_by": ["modules"]
                     },
                     "quast": {
+                        "branch": "master",
+                        "git_sha": "81880787133db07d9b4c1febd152c090eb8325dc",
+                        "installed_by": ["modules"]
+                    },
+                    "racon": {
                         "branch": "master",
                         "git_sha": "81880787133db07d9b4c1febd152c090eb8325dc",
                         "installed_by": ["modules"]
