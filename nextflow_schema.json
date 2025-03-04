@@ -55,6 +55,11 @@
                     "description": "Which MEGAHIT kmer size to use for the bandage assembly graph.",
                     "default": 109
                 },
+                "use_flye": {
+                    "type": "boolean",
+                    "description": "Use Flye for assembly instead of metaMDBG.",
+                    "default": false
+                },
                 "skip_porechop": {
                     "type": "boolean",
                     "description": "Skip the Porechop adapter trimming step.",
