@@ -10,15 +10,23 @@ workflow ONT_ASSEMBLY {
 
     ch_versions = Channel.empty()
 
-    PORECHOP_PORECHOP(
-        ch_input.map { meta, fastq_1, _fastq_2 -> [meta, fastq_1] }
-    )
-    ch_versions = ch_versions.mix(PORECHOP_PORECHOP.out.versions.first())
+    if (!params.skip_porechop) {
+        PORECHOP_PORECHOP(
+            ch_input.map { meta, fastq_1, _fastq_2 -> [meta, fastq_1] }
+        )
+        ch_versions = ch_versions.mix(PORECHOP_PORECHOP.out.versions.first())
+
+        ch_trimmed_reads = PORECHOP_PORECHOP.out.reads
+    }
+    else {
+        ch_trimmed_reads = ch_input
+    }
+
 
     // Add some logic to determine the mode?
     mode = "--nano-corr"
     FLYE(
-        PORECHOP_PORECHOP.out.reads,
+        ch_trimmed_reads,
         mode,
     )
     ch_versions = ch_versions.mix(FLYE.out.versions.first())
