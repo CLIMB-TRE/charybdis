@@ -52,6 +52,7 @@ workflow CHARYBDIS {
     ch_graph = ONT_ASSEMBLY.out.gfa.mix(ILLUMINA_ASSEMBLY_PAIRED.out.fastg, ILLUMINA_ASSEMBLY_SINGLE.out.fastg)
 
     if (!params.k2_remote) {
+        // Even if input was paired, contigs are always single-end
         ch_contigs.map { meta, contigs -> [[id: meta.id, single_end: true], contigs] }.set { ch_k2_local_input }
         KRAKEN2_KRAKEN2(
             ch_k2_local_input,
@@ -62,7 +63,6 @@ workflow CHARYBDIS {
         ch_versions = ch_versions.mix(KRAKEN2_KRAKEN2.out.versions.first())
     }
     else {
-        // Even if input was paired, contigs are always single-end
         KRAKEN2_CLIENT(
             ch_contigs,
             params.k2_remote,
