@@ -1,0 +1,6 @@
+channels:
+  - conda-forge
+  - bioconda
+  - nanoporetech
+dependencies:
+  - nanoporetech::kraken2-server=0.1.7

@@ -15,6 +15,11 @@
                         "git_sha": "ce1a66562156776bb0dd1c1bb5640d368dadd4e6",
                         "installed_by": ["modules"]
                     },
+                    "kraken2/kraken2": {
+                        "branch": "master",
+                        "git_sha": "05954dab2ff481bcb999f24455da29a5828af08d",
+                        "installed_by": ["modules"]
+                    },
                     "megahit": {
                         "branch": "master",
                         "git_sha": "9142b390538283705c084e4d612170972ff60326",
