@@ -61,8 +61,10 @@ workflow CHARYBDIS {
         ch_versions = ch_versions.mix(KRAKEN2_KRAKEN2.out.versions.first())
     }
     else {
+        // Even if input was paired, contigs are always single-end
+        ch_contigs.map { meta, contigs -> [meta.map { id, _single_end -> [id: id, single_end: true] }, contigs] }.set { ch_k2_local_input }
         KRAKEN2_CLIENT(
-            ch_contigs,
+            ch_k2_local_input,
             params.k2_remote,
         )
         ch_versions = ch_versions.mix(KRAKEN2_CLIENT.out.versions.first())
