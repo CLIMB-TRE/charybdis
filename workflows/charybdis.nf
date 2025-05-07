@@ -52,7 +52,7 @@ workflow CHARYBDIS {
     ch_graph = ONT_ASSEMBLY.out.gfa.mix(ILLUMINA_ASSEMBLY_PAIRED.out.fastg, ILLUMINA_ASSEMBLY_SINGLE.out.fastg)
 
     if (!params.k2_remote) {
-        ch_contigs.map { meta, contigs -> [meta.map { id, _single_end -> [id: id, single_end: true] }, contigs] }.set { ch_k2_local_input }
+        ch_contigs.map { meta, contigs -> [[id: meta.id, single_end: true], contigs] }.set { ch_k2_local_input }
         KRAKEN2_KRAKEN2(
             ch_k2_local_input,
             params.k2_local,
