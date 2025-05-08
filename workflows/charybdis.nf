@@ -58,10 +58,12 @@ workflow CHARYBDIS {
             error("No Kraken2 database provided. Please provide a local or remote Kraken2 database.")
         }
 
-        if (params.k2_local.endsWith(".tar.gz")) {
+        // Check if the local Kraken2 database is a tarball
+        // If it is, extract it and set the path to the extracted database
+        if (params.k2_local.endsWith(".tar.gz") || params.k2_local.endsWith(".tgz")) {
             ch_k2_db_untar = file(params.k2_local)
             UNTAR([[:], ch_k2_db_untar])
-            ch_versions = ch_versions.mix(UNTAR.out.versions.first())
+            ch_versions = ch_versions.mix(UNTAR.out.versions)
 
             UNTAR.out.untar
                 .map { _meta, path -> path }
@@ -75,7 +77,7 @@ workflow CHARYBDIS {
         ch_contigs.map { meta, contigs -> [[id: meta.id, single_end: true], contigs] }.set { ch_k2_local_input }
         KRAKEN2_KRAKEN2(
             ch_k2_local_input,
-            params.k2_local,
+            ch_k2_db_local,
             false,
             true,
         )
