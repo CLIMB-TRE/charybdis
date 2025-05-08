@@ -15,6 +15,7 @@ include { KRAKEN2_KRAKEN2                               } from '../modules/nf-co
 include { KRAKEN2_CLIENT                                } from '../modules/local/kraken2-client/main'
 include { METABAT2_METABAT2                             } from '../modules/nf-core/metabat2/metabat2/main'
 include { BANDAGE_IMAGE                                 } from '../modules/nf-core/bandage/image/main'
+include { UNTAR                                         } from '../modules/nf-core/untar/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -52,6 +53,25 @@ workflow CHARYBDIS {
     ch_graph = ONT_ASSEMBLY.out.gfa.mix(ILLUMINA_ASSEMBLY_PAIRED.out.fastg, ILLUMINA_ASSEMBLY_SINGLE.out.fastg)
 
     if (!params.k2_remote) {
+
+        if (!params.k2_local) {
+            error("No Kraken2 database provided. Please provide a local or remote Kraken2 database.")
+        }
+
+        if (params.k2_local.endswith(".tar.gz")) {
+            ch_k2_db_untar = file(params.k2_local)
+            UNTAR([[:], ch_k2_db_untar])
+            ch_versions = ch_versions.mix(UNTAR.out.versions.first())
+
+            UNTAR.out.untar
+                .map { _meta, path -> path }
+                .set { ch_k2_db_local }
+        }
+        else {
+            ch_k2_db_local = file(params.k2_local)
+        }
+
+
         // Even if input was paired, contigs are always single-end
         ch_contigs.map { meta, contigs -> [[id: meta.id, single_end: true], contigs] }.set { ch_k2_local_input }
         KRAKEN2_KRAKEN2(
@@ -63,6 +83,7 @@ workflow CHARYBDIS {
         ch_versions = ch_versions.mix(KRAKEN2_KRAKEN2.out.versions.first())
     }
     else {
+
         KRAKEN2_CLIENT(
             ch_contigs,
             params.k2_remote,
