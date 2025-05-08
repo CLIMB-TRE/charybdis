@@ -58,7 +58,7 @@ workflow CHARYBDIS {
             error("No Kraken2 database provided. Please provide a local or remote Kraken2 database.")
         }
 
-        if (params.k2_local.endswith(".tar.gz")) {
+        if (params.k2_local.endsWith(".tar.gz")) {
             ch_k2_db_untar = file(params.k2_local)
             UNTAR([[:], ch_k2_db_untar])
             ch_versions = ch_versions.mix(UNTAR.out.versions.first())
@@ -71,7 +71,6 @@ workflow CHARYBDIS {
             ch_k2_db_local = file(params.k2_local)
         }
 
-
         // Even if input was paired, contigs are always single-end
         ch_contigs.map { meta, contigs -> [[id: meta.id, single_end: true], contigs] }.set { ch_k2_local_input }
         KRAKEN2_KRAKEN2(
@@ -83,7 +82,6 @@ workflow CHARYBDIS {
         ch_versions = ch_versions.mix(KRAKEN2_KRAKEN2.out.versions.first())
     }
     else {
-
         KRAKEN2_CLIENT(
             ch_contigs,
             params.k2_remote,
