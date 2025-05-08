@@ -79,7 +79,7 @@
                 "k2_local": {
                     "type": "string",
                     "format": "file-path",
-                    "description": "Local path to Kraken2 database."
+                    "description": "Local path to Kraken2 database. May be a directory or a tarball."
                 }
             }
         },
