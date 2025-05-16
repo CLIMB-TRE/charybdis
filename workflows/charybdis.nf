@@ -16,6 +16,7 @@ include { KRAKEN2_CLIENT                                } from '../modules/local
 include { METABAT2_METABAT2                             } from '../modules/nf-core/metabat2/metabat2/main'
 include { BANDAGE_IMAGE                                 } from '../modules/nf-core/bandage/image/main'
 include { UNTAR                                         } from '../modules/nf-core/untar/main'
+include { REPEATMASKER_REPEATMASKER                     } from '../modules/nf-core/repeatmasker/repeatmasker/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -90,6 +91,9 @@ workflow CHARYBDIS {
         )
         ch_versions = ch_versions.mix(KRAKEN2_CLIENT.out.versions.first())
     }
+
+    REPEATMASKER_REPEATMASKER(ch_contigs, [])
+    ch_versions = ch_versions.mix(REPEATMASKER_REPEATMASKER.out.versions.first())
 
     // Generate a Bandage image of the assembly graph (it says it requires GFA but works fine with fastg)
     BANDAGE_IMAGE(
