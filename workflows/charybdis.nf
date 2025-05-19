@@ -3,19 +3,20 @@
     IMPORT MODULES / SUBWORKFLOWS / FUNCTIONS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-include { paramsSummaryMap          } from 'plugin/nf-schema'
-include { softwareVersionsToYAML    } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { methodsDescriptionText    } from '../subworkflows/local/utils_nfcore_charybdis_pipeline'
+include { paramsSummaryMap       } from 'plugin/nf-schema'
+include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_charybdis_pipeline'
 
-include { ONT_ASSEMBLY              } from '../subworkflows/local/ont_assembly/main'
-include { ILLUMINA_ASSEMBLY         } from '../subworkflows/local/illumina_assembly/main'
+include { ONT_ASSEMBLY           } from '../subworkflows/local/ont_assembly/main'
+include { ILLUMINA_ASSEMBLY      } from '../subworkflows/local/illumina_assembly/main'
 
-include { KRAKEN2_KRAKEN2           } from '../modules/nf-core/kraken2/kraken2/main'
-include { KRAKEN2_CLIENT            } from '../modules/local/kraken2-client/main'
-include { METABAT2_METABAT2         } from '../modules/nf-core/metabat2/metabat2/main'
-include { BANDAGE_IMAGE             } from '../modules/nf-core/bandage/image/main'
-include { UNTAR                     } from '../modules/nf-core/untar/main'
-include { REPEATMASKER_REPEATMASKER } from '../modules/nf-core/repeatmasker/repeatmasker/main'
+include { KRAKEN2_KRAKEN2        } from '../modules/nf-core/kraken2/kraken2/main'
+include { KRAKEN2_CLIENT         } from '../modules/local/kraken2-client/main'
+include { METABAT2_METABAT2      } from '../modules/nf-core/metabat2/metabat2/main'
+include { BANDAGE_IMAGE          } from '../modules/nf-core/bandage/image/main'
+include { UNTAR                  } from '../modules/nf-core/untar/main'
+include { AMRFINDERPLUS_UPDATE   } from '../modules/nf-core/amrfinderplus/update/main'
+include { AMRFINDERPLUS_RUN      } from '../modules/nf-core/amrfinderplus/run/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -87,8 +88,12 @@ workflow CHARYBDIS {
         ch_versions = ch_versions.mix(KRAKEN2_CLIENT.out.versions.first())
     }
 
-    REPEATMASKER_REPEATMASKER(ch_contigs, [])
-    ch_versions = ch_versions.mix(REPEATMASKER_REPEATMASKER.out.versions.first())
+    // Run AMRFinderPlus
+    AMRFINDERPLUS_UPDATE()
+    ch_versions = ch_versions.mix(AMRFINDERPLUS_UPDATE.out.versions)
+
+    AMRFINDERPLUS_RUN(ch_contigs, AMRFINDERPLUS_UPDATE.out.db)
+    ch_versions = ch_versions.mix(AMRFINDERPLUS_UPDATE.out.versions.first())
 
     // Generate a Bandage image of the assembly graph (it says it requires GFA but works fine with fastg)
     BANDAGE_IMAGE(
