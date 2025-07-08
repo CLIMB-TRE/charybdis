@@ -12,7 +12,8 @@
             "description": "Define where the pipeline should find input data and save output data.",
             "required": [
                 "input",
-                "outdir"
+                "outdir",
+                "taxonomy"
             ],
             "properties": {
                 "input": {
@@ -48,7 +49,8 @@
             "description": "Parameters which impact how the pipeline runs.",
             "required": [
                 "bandage_kmer_size",
-                "ont_assembler"
+                "ont_assembler",
+                "taxonomy"
             ],
             "properties": {
                 "ont_assembler": {
@@ -68,8 +70,7 @@
                 },
                 "skip_porechop": {
                     "type": "boolean",
-                    "description": "Skip the Porechop adapter trimming step for ONT data.",
-                    "default": false
+                    "description": "Skip the Porechop adapter trimming step for ONT data."
                 },
                 "k2_remote": {
                     "type": "string",
@@ -80,6 +81,47 @@
                     "type": "string",
                     "format": "file-path",
                     "description": "Local path to Kraken2 database. May be a directory or a tarball."
+                },
+                "taxonomy": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Path to taxonomy file for taxonomic classification.",
+                    "fa_icon": "fas fa-file-alt",
+                    "help_text": "The taxonomy dump is used to add lineage information to the taxonomic classifications. This may be a local directory or a tarball. If you do not provide this parameter, the pipeline will try to download the taxonomy dump from NCBI.",
+                    "default": "https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdump.tar.gz"
+                }
+            }
+        },
+        "diversity_metric_settings": {
+            "title": "Diversity Metric Settings",
+            "type": "object",
+            "fa_icon": "fas fa-dna",
+            "description": "Parameters which impact how the diversity metrics are calculated.",
+            "required": [
+                "diversity_metric_min_cov",
+                "diversity_metric_min_allele_depth",
+                "diversity_metric_min_allele_frequency"
+            ],
+            "properties": {
+                "diversity_metric_min_cov": {
+                    "type": "integer",
+                    "description": "Minimum coverage for calculation of diversity metrics.",
+                    "default": 0,
+                    "fa_icon": "fas fa-chart-bar"
+                },
+                "diversity_metric_min_allele_depth": {
+                    "type": "integer",
+                    "description": "Minimum depth of an allele to be considered for diversity metrics.",
+                    "default": 0,
+                    "fa_icon": "fas fa-chart-bar"
+                },
+                "diversity_metric_min_allele_frequency": {
+                    "type": "number",
+                    "description": "Minimum frequency of an allele to be considered for diversity metrics.",
+                    "default": 0.0,
+                    "fa_icon": "fas fa-chart-bar",
+                    "minimum": 0.0,
+                    "maximum": 1.0
                 }
             }
         },
@@ -213,6 +255,12 @@
     "allOf": [
         {
             "$ref": "#/$defs/input_output_options"
+        },
+        {
+            "$ref": "#/$defs/pipeline_settings"
+        },
+        {
+            "$ref": "#/$defs/diversity_metric_settings"
         },
         {
             "$ref": "#/$defs/institutional_config_options"
