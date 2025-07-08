@@ -84,7 +84,6 @@
                 },
                 "taxonomy": {
                     "type": "string",
-                    "format": "file-path",
                     "description": "Path to taxonomy file for taxonomic classification.",
                     "fa_icon": "fas fa-file-alt",
                     "help_text": "The taxonomy dump is used to add lineage information to the taxonomic classifications. This may be a local directory or a tarball. If you do not provide this parameter, the pipeline will try to download the taxonomy dump from NCBI.",
