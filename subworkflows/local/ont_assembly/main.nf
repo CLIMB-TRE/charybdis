@@ -91,7 +91,7 @@ workflow ONT_ASSEMBLY {
         ch_versions = ch_versions.mix(PIGZ_UNCOMPRESS_MINIASM.out.versions.first())
 
         // Filter out empty assemblies, they break racon
-        ch_assembly = MINIASM.out.assembly.filter { _meta, assembly -> assembly.length() > 100 }
+        ch_assembly = MINIASM.out.assembly.filter { _meta, assembly -> assembly.size() > 100 }
 
         ch_align_racon_input = ch_trimmed_reads
             .join(ch_assembly)
