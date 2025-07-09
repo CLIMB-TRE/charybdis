@@ -20,7 +20,6 @@ process MAPTIDE_PILEUP {
 
     """
     maptide \\
-
         ${args} \\
         ${bam} \\
         > ${prefix}.pileup.tsv
