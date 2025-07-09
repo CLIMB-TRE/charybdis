@@ -80,11 +80,9 @@ workflow ONT_ASSEMBLY {
         )
         ch_versions = ch_versions.mix(MINIMAP2_ALIGN_MINIASM.out.versions.first())
 
-        ch_miniasm = ch_trimmed_reads.join(MINIMAP2_ALIGN_MINIASM.out.paf, by: 0)
+        ch_miniasm_input = ch_trimmed_reads.join(MINIMAP2_ALIGN_MINIASM.out.paf)
 
-        MINIASM(
-            ch_miniasm
-        )
+        MINIASM(ch_miniasm_input)
         ch_versions = ch_versions.mix(MINIASM.out.versions.first())
 
         PIGZ_UNCOMPRESS_MINIASM(
@@ -92,9 +90,19 @@ workflow ONT_ASSEMBLY {
         )
         ch_versions = ch_versions.mix(PIGZ_UNCOMPRESS_MINIASM.out.versions.first())
 
+        // Filter out empty assemblies, they break racon
+        ch_assembly = MINIASM.out.assembly.filter { _meta, assembly -> assembly.size() > 0 }
+
+        ch_align_racon_input = ch_trimmed_reads
+            .join(ch_assembly)
+            .multiMap { meta, reads, assembly ->
+                reads: [meta, reads]
+                assembly: [meta, assembly]
+            }
+
         MINIMAP2_ALIGN_RACON(
-            ch_trimmed_reads,
-            MINIASM.out.assembly,
+            ch_align_racon_input.reads,
+            ch_align_racon_input.assembly,
             false,
             false,
             false,
@@ -102,7 +110,9 @@ workflow ONT_ASSEMBLY {
         )
         ch_versions = ch_versions.mix(MINIMAP2_ALIGN_RACON.out.versions.first())
 
-        ch_racon = ch_trimmed_reads.join(MINIASM.out.assembly, by: 0).join(MINIMAP2_ALIGN_RACON.out.paf, by: 0)
+        ch_racon = ch_trimmed_reads
+            .join(MINIASM.out.assembly)
+            .join(MINIMAP2_ALIGN_RACON.out.paf)
 
         RACON(ch_racon)
 
