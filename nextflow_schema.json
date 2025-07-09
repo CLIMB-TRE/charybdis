@@ -56,7 +56,7 @@
                 "ont_assembler": {
                     "type": "string",
                     "description": "Which assembler to use for ONT data.",
-                    "default": "flye",
+                    "default": "miniasm",
                     "enum": [
                         "flye",
                         "metaMDBG",
