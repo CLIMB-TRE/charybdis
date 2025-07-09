@@ -50,9 +50,22 @@
             "required": [
                 "bandage_kmer_size",
                 "ont_assembler",
+                "ont_preprocessor",
                 "taxonomy"
             ],
             "properties": {
+                "ont_preprocessor": {
+                    "type": "string",
+                    "description": "Which preprocessor to use for ONT data.",
+                    "default": "chopper",
+                    "enum": [
+                        "chopper",
+                        "porechop",
+                        "none"
+                    ],
+                    "help_text": "The preprocessor is used to trim the ONT reads before assembly. If you do not want to use a preprocessor, set this to 'none'.",
+                    "fa_icon": "fas fa-scissors"
+                },
                 "ont_assembler": {
                     "type": "string",
                     "description": "Which assembler to use for ONT data.",
@@ -67,10 +80,6 @@
                     "type": "integer",
                     "description": "Which MEGAHIT kmer size to use for the bandage assembly graph.",
                     "default": 109
-                },
-                "skip_porechop": {
-                    "type": "boolean",
-                    "description": "Skip the Porechop adapter trimming step for ONT data."
                 },
                 "k2_remote": {
                     "type": "string",
@@ -88,6 +97,61 @@
                     "fa_icon": "fas fa-file-alt",
                     "help_text": "The taxonomy dump is used to add lineage information to the taxonomic classifications. This may be a local directory or a tarball. If you do not provide this parameter, the pipeline will try to download the taxonomy dump from NCBI.",
                     "default": "https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdump.tar.gz"
+                }
+            }
+        },
+        "chopper_settings": {
+            "title": "Chopper settings",
+            "type": "object",
+            "fa_icon": "fas fa-cut",
+            "description": "Parameters which impact how the Chopper preprocessor runs.",
+            "required": [
+                "chopper_min_length",
+                "chopper_min_quality"
+            ],
+            "properties": {
+                "ont_min_quality": {
+                    "type": "integer",
+                    "description": "Minimum quality score for Chopper to keep a read.",
+                    "default": 7,
+                    "minimum": 0,
+                    "maximum": 40,
+                    "fa_icon": "fas fa-star"
+                },
+                "ont_max_quality": {
+                    "type": "integer",
+                    "description": "Maximum quality score for Chopper to keep a read.",
+                    "default": 40,
+                    "minimum": 0,
+                    "maximum": 40,
+                    "fa_icon": "fas fa-star"
+                },
+                "ont_min_length": {
+                    "type": "integer",
+                    "description": "Minimum length of a read for Chopper to keep it.",
+                    "default": 400,
+                    "minimum": 1,
+                    "fa_icon": "fas fa-text-height"
+                },
+                "ont_max_length": {
+                    "type": "integer",
+                    "description": "Maximum length of a read for Chopper to keep it.",
+                    "minimum": 1,
+                    "fa_icon": "fas fa-text-height"
+                },
+                "ont_trim_start_bases": {
+                    "type": "integer",
+                    "description": "Number of bases to trim from the start of a read.",
+                    "default": 0,
+                    "minimum": 0,
+                    "fa_icon": "fas fa-cut"
+                },
+                "ont_trim_end_bases": {
+                    "type": "integer",
+                    "description": "Number of bases to trim from the end of a read.",
+                    "default": 0,
+                    "minimum": 0,
+                    "fa_icon": "fas fa-cut"
                 }
             }
         },

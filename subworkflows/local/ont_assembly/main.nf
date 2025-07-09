@@ -7,6 +7,7 @@ include { MINIASM                                    } from '../../../modules/nf
 include { MINIMAP2_ALIGN as MINIMAP2_ALIGN_MINIASM   } from '../../../modules/nf-core/minimap2/align/main'
 include { MINIMAP2_ALIGN as MINIMAP2_ALIGN_RACON     } from '../../../modules/nf-core/minimap2/align/main'
 include { RACON                                      } from '../../../modules/nf-core/racon/main'
+include { CHOPPER                                    } from '../../../modules/nf-core/chopper/main'
 
 workflow ONT_ASSEMBLY {
     take:
@@ -16,13 +17,27 @@ workflow ONT_ASSEMBLY {
 
     ch_versions = Channel.empty()
 
-    if (!params.skip_porechop) {
-        PORECHOP_PORECHOP(
-            ch_input.map { meta, fastq_1, _fastq_2 -> [meta, fastq_1] }
-        )
-        ch_versions = ch_versions.mix(PORECHOP_PORECHOP.out.versions.first())
+    if (params.ont_preprocessor != "none") {
+        if (params.ont_preprocessor == "porechop") {
+            PORECHOP_PORECHOP(
+                ch_input.map { meta, fastq_1, _fastq_2 -> [meta, fastq_1] }
+            )
+            ch_versions = ch_versions.mix(PORECHOP_PORECHOP.out.versions.first())
 
-        ch_trimmed_reads = PORECHOP_PORECHOP.out.reads
+            ch_trimmed_reads = PORECHOP_PORECHOP.out.reads
+        }
+        else if (params.ont_preprocessor == "chopper") {
+            CHOPPER(
+                ch_input.map { meta, fastq_1, _fastq_2 -> [meta, fastq_1] },
+                [],
+            )
+            ch_versions = ch_versions.mix(CHOPPER.out.versions.first())
+
+            ch_trimmed_reads = CHOPPER.out.fastq
+        }
+        else {
+            error("Unrecognised ONT preprocessor: ${params.ont_preprocessor}")
+        }
     }
     else {
         ch_trimmed_reads = ch_input.map { meta, fastq_1, _fastq_2 -> [meta, fastq_1] }
