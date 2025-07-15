@@ -3,28 +3,28 @@
     IMPORT MODULES / SUBWORKFLOWS / FUNCTIONS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-include { paramsSummaryMap             } from 'plugin/nf-schema'
-include { softwareVersionsToYAML       } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { methodsDescriptionText       } from '../subworkflows/local/utils_nfcore_charybdis_pipeline'
+include { paramsSummaryMap              } from 'plugin/nf-schema'
+include { softwareVersionsToYAML        } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { methodsDescriptionText        } from '../subworkflows/local/utils_nfcore_charybdis_pipeline'
 
-include { ONT_ASSEMBLY                 } from '../subworkflows/local/ont_assembly/main'
-include { ILLUMINA_ASSEMBLY            } from '../subworkflows/local/illumina_assembly/main'
+include { ONT_ASSEMBLY                  } from '../subworkflows/local/ont_assembly/main'
+include { ILLUMINA_ASSEMBLY             } from '../subworkflows/local/illumina_assembly/main'
 
-include { KRAKEN2_KRAKEN2              } from '../modules/nf-core/kraken2/kraken2/main'
-include { KRAKEN2_CLIENT               } from '../modules/local/kraken2-client/main'
-include { METABAT2_METABAT2            } from '../modules/nf-core/metabat2/metabat2/main'
-include { BANDAGE_IMAGE                } from '../modules/nf-core/bandage/image/main'
-include { UNTAR as UNTAR_KRAKEN        } from '../modules/nf-core/untar/main'
-include { UNTAR as UNTAR_TAXONOMY      } from '../modules/nf-core/untar/main'
-include { AMRFINDERPLUS_UPDATE         } from '../modules/nf-core/amrfinderplus/update/main'
-include { AMRFINDERPLUS_RUN            } from '../modules/nf-core/amrfinderplus/run/main'
-include { TAXONKIT_LINEAGE             } from '../modules/nf-core/taxonkit/lineage/main'
-include { MINIMAP2_ALIGN               } from '../modules/nf-core/minimap2/align/main'
-include { BWAMEM2_INDEX                } from '../modules/nf-core/bwamem2/index/main'
-include { BWAMEM2_MEM                  } from '../modules/nf-core/bwamem2/mem/main'
-include { DIVERSITY_METRICS            } from '../modules/local/diversity-metrics/main'
-include { MAPTIDE_PILEUP               } from '../modules/local/maptide/main'
-include { CALULATE_PER_TAXON_DIVERSITY } from '../modules/local/per-taxon-diversity/main'
+include { KRAKEN2_KRAKEN2               } from '../modules/nf-core/kraken2/kraken2/main'
+include { KRAKEN2_CLIENT                } from '../modules/local/kraken2-client/main'
+include { METABAT2_METABAT2             } from '../modules/nf-core/metabat2/metabat2/main'
+include { BANDAGE_IMAGE                 } from '../modules/nf-core/bandage/image/main'
+include { UNTAR as UNTAR_KRAKEN         } from '../modules/nf-core/untar/main'
+include { UNTAR as UNTAR_TAXONOMY       } from '../modules/nf-core/untar/main'
+include { AMRFINDERPLUS_UPDATE          } from '../modules/nf-core/amrfinderplus/update/main'
+include { AMRFINDERPLUS_RUN             } from '../modules/nf-core/amrfinderplus/run/main'
+include { TAXONKIT_LINEAGE              } from '../modules/nf-core/taxonkit/lineage/main'
+include { MINIMAP2_ALIGN                } from '../modules/nf-core/minimap2/align/main'
+include { BWAMEM2_INDEX                 } from '../modules/nf-core/bwamem2/index/main'
+include { BWAMEM2_MEM                   } from '../modules/nf-core/bwamem2/mem/main'
+include { DIVERSITY_METRICS             } from '../modules/local/diversity-metrics/main'
+include { MAPTIDE_PILEUP                } from '../modules/local/maptide/main'
+include { CALCULATE_PER_TAXON_DIVERSITY } from '../modules/local/per-taxon-diversity/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

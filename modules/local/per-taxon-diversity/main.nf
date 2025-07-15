@@ -1,4 +1,4 @@
-process CALULATE_PER_TAXON_DIVERSITY {
+process CALCULATE_PER_TAXON_DIVERSITY {
     tag { meta.id }
     label 'process_single'
 
