@@ -31,6 +31,14 @@ def parse_lineage_tsv(lineage_tsv: str) -> dict:
 
             contig_id = row[1]
             tax_id = int(row[2])
+            if not all(row[5:8]):
+                # Skip rows with missing lineage information
+                print(
+                    f"Skipping contig {contig_id} due to missing lineage information.",
+                    file=sys.stderr,
+                )
+                continue
+
             lineage_scientific_name = row[5].split(";")
             lineage_tax_id = [int(x) for x in row[6].split(";")]
             lineage_ranks = row[7].split(";")
