@@ -175,7 +175,7 @@ workflow CHARYBDIS {
             DIVERSITY_METRICS.out.csv.map { meta, csv -> [meta.subMap("id", "platform"), csv] }
         )
 
-    CALULATE_PER_TAXON_DIVERSITY(ch_lineages_and_diversity)
+    CALCULATE_PER_TAXON_DIVERSITY(ch_lineages_and_diversity)
 
     // Run AMRFinderPlus
     AMRFINDERPLUS_UPDATE()
