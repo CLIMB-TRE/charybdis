@@ -135,8 +135,10 @@ def write_per_taxon_diversity(
 
         writer.writeheader()
 
+        out_rows = []
+
         for tax_id, taxon_info in taxon_dict.items():
-            writer.writerow(
+            out_rows.append(
                 {
                     "tax_id": tax_id,
                     "scientific_name": taxon_info["scientific_name"],
@@ -145,6 +147,11 @@ def write_per_taxon_diversity(
                     "contributing_contigs": taxon_info["contibuting_contigs"],
                 }
             )
+
+        out_rows.sort(key=lambda x: x["tax_id"])
+
+        for row in out_rows:
+            writer.writerow(row)
 
 
 def main():
