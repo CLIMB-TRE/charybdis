@@ -59,7 +59,7 @@ def parse_lineage_tsv(lineage_tsv: str) -> dict:
                         "rank": lineage_ranks[i],
                         "nt_diversity_scores": [],
                         "contigs": [],
-                        "contibuting_contigs": 0,
+                        "contributing_contigs": 0,
                     },
                 )
 
