@@ -25,6 +25,7 @@ include { BWAMEM2_MEM                   } from '../modules/nf-core/bwamem2/mem/m
 include { DIVERSITY_METRICS             } from '../modules/local/diversity-metrics/main'
 include { MAPTIDE_PILEUP                } from '../modules/local/maptide/main'
 include { CALCULATE_PER_TAXON_DIVERSITY } from '../modules/local/per-taxon-diversity/main'
+include { DIVERSITY_METRIC_PLOT         } from '../modules/local/diversity-metric-plot/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -176,6 +177,10 @@ workflow CHARYBDIS {
         )
 
     CALCULATE_PER_TAXON_DIVERSITY(ch_lineages_and_diversity)
+
+    DIVERSITY_METRIC_PLOT(
+        CALCULATE_PER_TAXON_DIVERSITY.out.taxon_diversity_tsv
+    )
 
     // Run AMRFinderPlus
     AMRFINDERPLUS_UPDATE()

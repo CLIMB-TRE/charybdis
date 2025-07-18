@@ -111,6 +111,21 @@ def calculate_per_taxon_diversity(
 
         taxon_info["nt_diversity"] = avg_diversity
 
+    # Calculate relative nucleotide diversity (0 to 1 scaled)
+    max_diversity = max(
+        (taxon_info["nt_diversity"] for taxon_info in taxon_dict.values()),
+        default=0.0,
+    )
+    if max_diversity > 0:
+        for taxon_info in taxon_dict.values():
+            taxon_info["relative_nt_diversity"] = (
+                taxon_info["nt_diversity"] / max_diversity
+            )
+
+    else:
+        for taxon_info in taxon_dict.values():
+            taxon_info["relative_nt_diversity"] = 0.0
+
     return taxon_dict
 
 
@@ -129,6 +144,7 @@ def write_per_taxon_diversity(
                 "scientific_name",
                 "rank",
                 "nt_diversity",
+                "relative_nt_diversity",
                 "contributing_contigs",
             ],
         )
@@ -144,7 +160,8 @@ def write_per_taxon_diversity(
                     "scientific_name": taxon_info["scientific_name"],
                     "rank": taxon_info["rank"],
                     "nt_diversity": taxon_info["nt_diversity"],
-                    "contributing_contigs": taxon_info["contibuting_contigs"],
+                    "relative_nt_diversity": taxon_info["relative_nt_diversity"],
+                    "contributing_contigs": taxon_info["contributing_contigs"],
                 }
             )
 
