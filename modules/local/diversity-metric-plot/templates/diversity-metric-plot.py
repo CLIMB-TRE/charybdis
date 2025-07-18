@@ -51,7 +51,7 @@ def diversity_metric_plot(taxon_scores: list, output_file: str):
 
     fig.update_layout(
         yaxis=dict(type="continuous", categoryorder="total ascending"),
-        xacis=dict(
+        xaxis=dict(
             type="category",
             categoryorder=[
                 "no rank",
