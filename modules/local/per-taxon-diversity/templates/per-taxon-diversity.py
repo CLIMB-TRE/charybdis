@@ -98,7 +98,7 @@ def calculate_per_taxon_diversity(
 
                 taxon_dict[tax_id]["nt_diversity_scores"].append(nt_diversity)
                 taxon_dict[tax_id]["contigs"].append(contig_id)
-                taxon_dict[tax_id]["contibuting_contigs"] += 1
+                taxon_dict[tax_id]["contributing_contigs"] += 1
 
     # Calculate average nucleotide diversity for each taxon
     for tax_id, taxon_info in taxon_dict.items():
@@ -154,6 +154,7 @@ def write_per_taxon_diversity(
         out_rows = []
 
         for tax_id, taxon_info in taxon_dict.items():
+            print(taxon_info)
             out_rows.append(
                 {
                     "tax_id": tax_id,
