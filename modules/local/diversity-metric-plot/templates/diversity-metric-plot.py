@@ -72,8 +72,13 @@ def diversity_metric_plot(taxon_scores: list, output_file: str):
                 "infraorder",
                 "superfamily",
                 "family",
+                "subfamily",
                 "genus",
+                "species group",
+                "species complex",
                 "species",
+                "subspecies",
+                "strain",
             ],
         ),
     )
