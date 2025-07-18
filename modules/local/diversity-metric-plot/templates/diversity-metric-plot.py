@@ -38,17 +38,49 @@ def diversity_metric_plot(taxon_scores: list, output_file: str):
     fig = px.scatter(
         taxon_scores,
         x="rank",
-        y="nt_diversity",
+        y="relative_nt_diversity",
         color="scientific_name",
         hover_name="tax_id",
         title="Diversity Metric Plot",
-        labels={"nt_diversity": "Nucleotide Diversity", "rank": "Taxonomic Rank"},
+        labels={
+            "relative_nt_diversity": "Relative Nucleotide Diversity",
+            "rank": "Taxonomic Rank",
+        },
         color_discrete_sequence=px.colors.qualitative.Plotly,
     )
 
     fig.update_layout(
+        yaxis=dict(type="continuous", categoryorder="total ascending"),
+        xacis=dict(
+            type="category",
+            categoryorder=[
+                "no rank",
+                "superkingdom",
+                "kingdom",
+                "clade",
+                "subkingdom",
+                "phylum",
+                "subphylum",
+                "superclass",
+                "class",
+                "subclass",
+                "superorder",
+                "infraorder",
+                "order",
+                "suborder",
+                "parvorder",
+                "infraorder",
+                "superfamily",
+                "family",
+                "genus",
+                "species",
+            ],
+        ),
+    )
+
+    fig.update_layout(
         xaxis_title="Taxonomic Rank",
-        yaxis_title="Nucleotide Diversity",
+        yaxis_title="Relative Nucleotide Diversity",
         legend_title="Scientific Name",
         template="plotly_white",
     )
