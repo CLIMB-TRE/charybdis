@@ -100,6 +100,24 @@
                 }
             }
         },
+        "miniasm_settings": {
+            "title": "Miniasm settings",
+            "type": "object",
+            "fa_icon": "fas fa-code-branch",
+            "description": "Parameters which impact how the Miniasm assembler runs.",
+            "properties": {
+                "miniasm_min_overlap": {
+                    "type": "integer",
+                    "description": "Minimum overlap length for Miniasm to consider two reads as overlapping.",
+                    "fa_icon": "fas fa-text-width"
+                },
+                "miniasm_min_coverage": {
+                    "type": "integer",
+                    "description": "Minimum coverage of an overlap for Miniasm to consider it valid.",
+                    "fa_icon": "fas fa-chart-bar"
+                }
+            }
+        },
         "chopper_settings": {
             "title": "Chopper settings",
             "type": "object",
