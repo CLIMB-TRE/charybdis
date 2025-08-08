@@ -69,12 +69,23 @@
                 "ont_assembler": {
                     "type": "string",
                     "description": "Which assembler to use for ONT data.",
-                    "default": "miniasm",
+                    "default": "flye",
                     "enum": [
                         "flye",
                         "metaMDBG",
                         "miniasm"
-                    ]
+                    ],
+                    "fa_icon": "fas fa-cogs"
+                },
+                "illumina_assembler": {
+                    "type": "string",
+                    "description": "Which assembler to use for Illumina data.",
+                    "default": "spades",
+                    "enum": [
+                        "megahit",
+                        "spades"
+                    ],
+                    "fa_icon": "fas fa-cogs"
                 },
                 "bandage_kmer_size": {
                     "type": "integer",
