@@ -56,7 +56,7 @@ workflow CHARYBDIS {
     ch_versions = ch_versions.mix(ILLUMINA_ASSEMBLY.out.versions.first())
 
     ch_contigs = ONT_ASSEMBLY.out.contigs.mix(ILLUMINA_ASSEMBLY.out.contigs)
-    ch_graph = ONT_ASSEMBLY.out.gfa.mix(ILLUMINA_ASSEMBLY.out.fastg)
+    ch_graph = ONT_ASSEMBLY.out.gfa.mix(ILLUMINA_ASSEMBLY.out.graph)
 
     if (!params.k2_remote) {
 
