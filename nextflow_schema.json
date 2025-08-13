@@ -72,7 +72,7 @@
                     "default": "flye",
                     "enum": [
                         "flye",
-                        "metaMDBG",
+                        "metamdbg",
                         "miniasm"
                     ],
                     "fa_icon": "fas fa-cogs"
