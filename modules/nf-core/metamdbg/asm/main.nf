@@ -22,6 +22,7 @@ process METAMDBG_ASM {
 
     script:
     def args = task.ext.args ?: ''
+    def args2 = task.ext.args2 ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     if (!(input_type in ["hifi", "ont"])) {
         error("ERROR: input_type must be one of either 'hifi' or 'ont'.")
@@ -37,6 +38,7 @@ process METAMDBG_ASM {
         --threads ${task.cpus} \\
         --assembly-dir . \\
         --k ${params.metamdbg_k} \\
+        ${args2}
 
     rm -r tmp/
 
