@@ -80,7 +80,7 @@
                 "illumina_assembler": {
                     "type": "string",
                     "description": "Which assembler to use for Illumina data.",
-                    "default": "spades",
+                    "default": "megahit",
                     "enum": [
                         "megahit",
                         "spades"
