@@ -13,6 +13,7 @@ process METAMDBG_ASM {
 
     output:
     tuple val(meta), path("*.contigs.fasta.gz"), emit: contigs
+    tuple val(meta), path("*.metaMDBG.gfa"), emit: gfa
     tuple val(meta), path("*.metaMDBG.log"), emit: log
     path "versions.yml", emit: versions
 
@@ -32,10 +33,16 @@ process METAMDBG_ASM {
         ${args} \\
         --in-${input_type} ${reads}
 
+    metaMDBG gfa \\
+        --threads ${task.cpus} \\
+        --assembly-dir . \\
+        --k ${params.metamdbg_k} \\
+
     rm -r tmp/
 
     mv contigs.fasta.gz ${prefix}.contigs.fasta.gz
     mv metaMDBG.log ${prefix}.metaMDBG.log
+    mv assemblyGraph_*.gfa ${prefix}.metaMDBG.gfa
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

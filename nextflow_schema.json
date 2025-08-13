@@ -129,6 +129,21 @@
                 }
             }
         },
+        "metamdbg_settings": {
+            "title": "MetaMDBG settings",
+            "type": "object",
+            "fa_icon": "fas fa-code-branch",
+            "description": "Parameters which impact how the MetaMDBG assembler runs.",
+            "properties": {
+                "metamdbg_k": {
+                    "type": "integer",
+                    "description": "K-mer size for MetaMDBG assembly graph.",
+                    "default": 21,
+                    "minimum": 1,
+                    "fa_icon": "fas fa-text-width"
+                }
+            }
+        },
         "chopper_settings": {
             "title": "Chopper settings",
             "type": "object",

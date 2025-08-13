@@ -67,7 +67,7 @@ workflow ONT_ASSEMBLY {
         ch_versions = ch_versions.mix(METAMDBG_ASM.out.versions.first())
 
         ch_contigs = METAMDBG_ASM.out.contigs
-        ch_gfa = []
+        ch_gfa = METAMDBG_ASM.out.gfa
     }
     else if (params.ont_assembler == "miniasm") {
         MINIMAP2_ALIGN_MINIASM(
