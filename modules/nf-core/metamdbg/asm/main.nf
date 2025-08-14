@@ -4,8 +4,8 @@ process METAMDBG_ASM {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
-        ? 'https://depot.galaxyproject.org/singularity/metamdbg:1.1--h077b44d_1'
-        : 'biocontainers/metamdbg:1.1--h077b44d_1'}"
+        ? 'https://depot.galaxyproject.org/singularity/metamdbg:1.2--h077b44d_0'
+        : 'biocontainers/metamdbg:1.2--h077b44d_0'}"
 
     input:
     tuple val(meta), path(reads)
@@ -44,7 +44,7 @@ process METAMDBG_ASM {
 
     mv contigs.fasta.gz ${prefix}.contigs.fasta.gz
     mv metaMDBG.log ${prefix}.metaMDBG.log
-    mv assemblyGraph_*.gfa ${prefix}.metaMDBG.gfa
+    mv assemblyGraph_k${params.metamdbg_k}_*.noseq.gfa ${prefix}.metaMDBG.gfa
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
