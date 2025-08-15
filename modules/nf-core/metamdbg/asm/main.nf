@@ -44,7 +44,7 @@ process METAMDBG_ASM {
 
     mv contigs.fasta.gz ${prefix}.contigs.fasta.gz
     mv metaMDBG.log ${prefix}.metaMDBG.log
-    mv assemblyGraph_k${params.metamdbg_k}_*.noseq.gfa ${prefix}.assembly.gfa
+    mv assemblyGraph_k${params.metamdbg_k}*.noseq.gfa ${prefix}.assembly.gfa
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
