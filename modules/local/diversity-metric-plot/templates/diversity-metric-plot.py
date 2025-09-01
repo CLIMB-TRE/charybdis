@@ -35,60 +35,83 @@ def diversity_metric_plot(taxon_scores: list, output_file: str):
         output_file (str): Path to the output file for the plot.
     """
 
+    filtered_taxon_scores = [x for x in taxon_scores if x["rank"] == "species"]
+
     fig = px.scatter(
-        taxon_scores,
-        x="rank",
+        filtered_taxon_scores,
+        x="relative_mean_depth",
         y="relative_nt_diversity",
         color="scientific_name",
         hover_name="tax_id",
-        title="Diversity Metric Plot",
+        title="Abundance / Diversity Metric Plot",
         labels={
             "relative_nt_diversity": "Relative Nucleotide Diversity",
-            "rank": "Taxonomic Rank",
+            "relative_mean_depth": "Relative Mean Depth",
         },
         color_discrete_sequence=px.colors.qualitative.Plotly,
     )
 
     fig.update_layout(
-        yaxis=dict(type="linear", categoryorder="total ascending"),
-        xaxis=dict(
-            type="category",
-            categoryarray=[
-                "no rank",
-                "superkingdom",
-                "kingdom",
-                "clade",
-                "subkingdom",
-                "phylum",
-                "subphylum",
-                "superclass",
-                "class",
-                "subclass",
-                "superorder",
-                "infraorder",
-                "order",
-                "suborder",
-                "parvorder",
-                "infraorder",
-                "superfamily",
-                "family",
-                "subfamily",
-                "genus",
-                "species group",
-                "species complex",
-                "species",
-                "subspecies",
-                "strain",
-            ],
-        ),
-    )
-
-    fig.update_layout(
-        xaxis_title="Taxonomic Rank",
+        xaxis_title="Relative Mean Depth",
         yaxis_title="Relative Nucleotide Diversity",
         legend_title="Scientific Name",
         template="plotly_white",
     )
+
+    # fig = px.scatter(
+    #     taxon_scores,
+    #     x="rank",
+    #     y="relative_nt_diversity",
+    #     color="scientific_name",
+    #     hover_name="tax_id",
+    #     title="Diversity Metric Plot",
+    #     labels={
+    #         "relative_nt_diversity": "Relative Nucleotide Diversity",
+    #         "rank": "Taxonomic Rank",
+    #     },
+    #     color_discrete_sequence=px.colors.qualitative.Plotly,
+    # )
+
+    # fig.update_layout(
+    #     yaxis=dict(type="linear", categoryorder="total ascending"),
+    #     xaxis=dict(
+    #         type="category",
+    #         categoryarray=[
+    #             "no rank",
+    #             "superkingdom",
+    #             "kingdom",
+    #             "clade",
+    #             "subkingdom",
+    #             "phylum",
+    #             "subphylum",
+    #             "superclass",
+    #             "class",
+    #             "subclass",
+    #             "superorder",
+    #             "infraorder",
+    #             "order",
+    #             "suborder",
+    #             "parvorder",
+    #             "infraorder",
+    #             "superfamily",
+    #             "family",
+    #             "subfamily",
+    #             "genus",
+    #             "species group",
+    #             "species complex",
+    #             "species",
+    #             "subspecies",
+    #             "strain",
+    #         ],
+    #     ),
+    # )
+
+    # fig.update_layout(
+    #     xaxis_title="Taxonomic Rank",
+    #     yaxis_title="Relative Nucleotide Diversity",
+    #     legend_title="Scientific Name",
+    #     template="plotly_white",
+    # )
 
     fig.write_html(output_file)
 

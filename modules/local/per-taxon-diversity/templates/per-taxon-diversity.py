@@ -59,6 +59,7 @@ def parse_lineage_tsv(lineage_tsv: str) -> dict:
                         "rank": lineage_ranks[i],
                         "nt_diversity_scores": [],
                         "contigs": [],
+                        "mean_depths": [],
                         "contributing_contigs": 0,
                     },
                 )
@@ -98,6 +99,7 @@ def calculate_per_taxon_diversity(
 
                 taxon_dict[tax_id]["nt_diversity_scores"].append(nt_diversity)
                 taxon_dict[tax_id]["contigs"].append(contig_id)
+                taxon_dict[tax_id]["mean_depths"].append(float(row["mean_depth"]))
                 taxon_dict[tax_id]["contributing_contigs"] += 1
 
     # Calculate average nucleotide diversity for each taxon
@@ -110,6 +112,13 @@ def calculate_per_taxon_diversity(
             avg_diversity = 0.0
 
         taxon_info["nt_diversity"] = avg_diversity
+
+        if taxon_info["mean_depths"]:
+            avg_depth = sum(taxon_info["mean_depths"]) / len(taxon_info["mean_depths"])
+        else:
+            avg_depth = 0.0
+
+        taxon_info["mean_depth"] = avg_depth
 
     # Calculate relative nucleotide diversity (0 to 1 scaled)
     max_diversity = max(
@@ -125,6 +134,14 @@ def calculate_per_taxon_diversity(
     else:
         for taxon_info in taxon_dict.values():
             taxon_info["relative_nt_diversity"] = 0.0
+
+    max_depth = max(
+        (taxon_info["mean_depth"] for taxon_info in taxon_dict.values()),
+        default=0.0,
+    )
+    if max_depth > 0:
+        for taxon_info in taxon_dict.values():
+            taxon_info["relative_mean_depth"] = taxon_info["mean_depth"] / max_depth
 
     return taxon_dict
 
@@ -145,6 +162,8 @@ def write_per_taxon_diversity(
                 "rank",
                 "nt_diversity",
                 "relative_nt_diversity",
+                "mean_contig_depth",
+                "relative_mean_depth",
                 "contributing_contigs",
             ],
         )
@@ -162,6 +181,8 @@ def write_per_taxon_diversity(
                     "rank": taxon_info["rank"],
                     "nt_diversity": taxon_info["nt_diversity"],
                     "relative_nt_diversity": taxon_info["relative_nt_diversity"],
+                    "mean_contig_depth": taxon_info["mean_depth"],
+                    "relative_mean_depth": taxon_info["relative_mean_depth"],
                     "contributing_contigs": taxon_info["contributing_contigs"],
                 }
             )

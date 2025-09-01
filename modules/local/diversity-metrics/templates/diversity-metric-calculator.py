@@ -80,10 +80,10 @@ def run(args):
 
     pairwise_difference_arrays = {}
     entropy_arrays = {}
+    depth_arrays = {}
 
     to_check = ("a", "c", "g", "t", "ds")
 
-    # Load the VCF file
     with open(args.tsv, "r") as tsv_file:
         # Headers -> chrom   pos     ins     cov     a       c       g       t       ds      n
 
@@ -94,6 +94,9 @@ def run(args):
             # TODO support insertions
             if int(row["ins"]) > 0:
                 continue
+
+            depth_arrays.setdefault(row["chrom"], [])
+            depth_arrays[row["chrom"]].append(int(row["cov"]))
 
             # Skip if the coverage is 0
             if row["cov"] == "0":
@@ -114,10 +117,17 @@ def run(args):
 
             if entropy is not None:
                 entropy_arrays[row["chrom"]].append(entropy)
+
     with open(f"{args.sample}.diversity_metrics.csv", "w") as f:
         writer = csv.DictWriter(
             f,
-            fieldnames=["sample", "chrom", "nt_diversity", "shannon_entropy"],
+            fieldnames=[
+                "sample",
+                "chrom",
+                "mean_depth",
+                "nt_diversity",
+                "shannon_entropy",
+            ],
             lineterminator="\\n",
         )
         writer.writeheader()
@@ -136,9 +146,16 @@ def run(args):
                 x / len(entropy_arrays[chrom]) for x in entropy_arrays[chrom]
             )
 
+            mean_depth = (
+                sum(depth_arrays[chrom]) / len(depth_arrays[chrom])
+                if depth_arrays[chrom]
+                else 0
+            )
+
             out_dict = {
                 "sample": args.sample,
                 "chrom": chrom,
+                "mean_depth": mean_depth,
                 "nt_diversity": pi_diversity,
                 "shannon_entropy": shannon_entropy,
             }
