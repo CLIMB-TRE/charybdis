@@ -26,7 +26,9 @@ def parse_metrics_tsv(metrics_tsv: str) -> dict:
     return taxon_scores
 
 
-def diversity_metric_plot(taxon_scores: pd.DataFrame, output_file: str):
+def diversity_metric_plot(
+    taxon_scores: pd.DataFrame, output_file: str, rank: str = "species"
+):
     """
     Generate a diversity metric plot from the taxon scores.
 
@@ -35,7 +37,7 @@ def diversity_metric_plot(taxon_scores: pd.DataFrame, output_file: str):
         output_file (str): Path to the output file for the plot.
     """
 
-    filtered_taxon_scores = taxon_scores[taxon_scores["rank"] == "species"]
+    filtered_taxon_scores = taxon_scores[taxon_scores["rank"] == rank]
 
     fig = px.scatter(
         filtered_taxon_scores,
@@ -126,7 +128,13 @@ def main():
         print("No taxon scores found in the provided TSV file, cannot generate plot.")
         sys.exit(15)
 
-    diversity_metric_plot(taxon_score_df, "${meta.id}.diversity_metric_plot.html")
+    diversity_metric_plot(
+        taxon_score_df, "${meta.id}.species_diversity_metric_plot.html", rank="species"
+    )
+
+    diversity_metric_plot(
+        taxon_score_df, "${meta.id}.genus_diversity_metric_plot.html", rank="genus"
+    )
 
 
 if __name__ == "__main__":

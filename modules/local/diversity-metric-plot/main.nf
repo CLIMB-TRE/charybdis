@@ -14,13 +14,15 @@ process DIVERSITY_METRIC_PLOT {
     tuple val(meta), path(diversity_metric_tsv)
 
     output:
-    tuple val(meta), path("*.diversity_metric_plot.html"), emit: diversity_metric_plot_html
+    tuple val(meta), path("*.species_diversity_metric_plot.html"), emit: diversity_metric_plot_species_html
+    tuple val(meta), path("*.genus_diversity_metric_plot.html"), emit: diversity_metric_plot_genus_html
 
     script:
     template("diversity-metric-plot.py")
 
     stub:
     """
-    touch ${meta.id}.diversity_metric_plot.html
+    touch ${meta.id}.species_diversity_metric_plot.html
+    touch ${meta.id}.genus_diversity_metric_plot.html
     """
 }
