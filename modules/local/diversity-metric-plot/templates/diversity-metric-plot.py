@@ -56,6 +56,8 @@ def diversity_metric_plot(taxon_scores: pd.DataFrame, output_file: str):
         yaxis_title="Relative Nucleotide Diversity",
         legend_title="Scientific Name",
         template="plotly_white",
+        yaxis=dict(type="linear", categoryorder="total ascending"),
+        xaxis=dict(type="linear", categoryorder="total ascending"),
     )
 
     # fig = px.scatter(
