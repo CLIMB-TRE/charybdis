@@ -26,16 +26,16 @@ def parse_metrics_tsv(metrics_tsv: str) -> dict:
     return taxon_scores
 
 
-def diversity_metric_plot(taxon_scores: list, output_file: str):
+def diversity_metric_plot(taxon_scores: pd.DataFrame, output_file: str):
     """
     Generate a diversity metric plot from the taxon scores.
 
     Args:
-        taxon_scores (list): List of dictionaries containing taxon scores.
+        taxon_scores (pd.DataFrame): DataFrame containing taxon scores.
         output_file (str): Path to the output file for the plot.
     """
 
-    filtered_taxon_scores = [x for x in taxon_scores if x["rank"] == "species"]
+    filtered_taxon_scores = taxon_scores[taxon_scores["rank"] == "species"]
 
     fig = px.scatter(
         filtered_taxon_scores,
