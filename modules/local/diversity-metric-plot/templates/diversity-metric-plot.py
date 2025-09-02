@@ -41,14 +41,14 @@ def diversity_metric_plot(
 
     fig = px.scatter(
         filtered_taxon_scores,
-        x="relative_mean_depth",
-        y="relative_nt_diversity",
+        x="mean_depth_zscore",
+        y="nt_diversity_zscore",
         color="scientific_name",
         hover_name="tax_id",
         title="Abundance / Diversity Metric Plot",
         labels={
-            "relative_nt_diversity": "Relative Nucleotide Diversity",
-            "relative_mean_depth": "Relative Mean Depth",
+            "nt_diversity_zscore": "Nucleotide Diversity Z-Score",
+            "mean_depth_zscore": "Mean Depth Z-Score",
         },
         color_discrete_sequence=px.colors.qualitative.Plotly,
     )

@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 import csv
 import sys
+import statistics
 
 
 def parse_lineage_tsv(lineage_tsv: str) -> dict:
@@ -120,28 +121,46 @@ def calculate_per_taxon_diversity(
 
         taxon_info["mean_depth"] = avg_depth
 
-    # Calculate relative nucleotide diversity (0 to 1 scaled)
-    max_diversity = max(
-        (taxon_info["nt_diversity"] for taxon_info in taxon_dict.values()),
-        default=0.0,
+    # Calculate nt diversity Z score per taxon (std deviations from mean)
+    mean_diversity = (
+        sum(taxon_info["nt_diversity"] for taxon_info in taxon_dict.values())
+        / len(taxon_dict)
+        if taxon_dict
+        else 0.0
     )
-    if max_diversity > 0:
-        for taxon_info in taxon_dict.values():
-            taxon_info["relative_nt_diversity"] = (
-                taxon_info["nt_diversity"] / max_diversity
-            )
 
-    else:
-        for taxon_info in taxon_dict.values():
-            taxon_info["relative_nt_diversity"] = 0.0
-
-    max_depth = max(
-        (taxon_info["mean_depth"] for taxon_info in taxon_dict.values()),
-        default=0.0,
+    std_dev_diversity = (
+        statistics.stdev(
+            taxon_info["nt_diversity"] for taxon_info in taxon_dict.values()
+        )
+        if len(taxon_dict) > 1
+        else 0.0
     )
-    if max_depth > 0:
+
+    if std_dev_diversity > 0:
         for taxon_info in taxon_dict.values():
-            taxon_info["relative_mean_depth"] = taxon_info["mean_depth"] / max_depth
+            taxon_info["nt_diversity_zscore"] = (
+                taxon_info["nt_diversity"] - mean_diversity
+            ) / std_dev_diversity
+
+    mean_depth = (
+        sum(taxon_info["mean_depth"] for taxon_info in taxon_dict.values())
+        / len(taxon_dict)
+        if taxon_dict
+        else 0.0
+    )
+
+    std_dev_depth = (
+        statistics.stdev(taxon_info["mean_depth"] for taxon_info in taxon_dict.values())
+        if len(taxon_dict) > 1
+        else 0.0
+    )
+
+    if std_dev_depth > 0:
+        for taxon_info in taxon_dict.values():
+            taxon_info["mean_depth_zscore"] = (
+                taxon_info["mean_depth"] - mean_depth
+            ) / std_dev_depth
 
     return taxon_dict
 
@@ -161,9 +180,9 @@ def write_per_taxon_diversity(
                 "scientific_name",
                 "rank",
                 "nt_diversity",
-                "relative_nt_diversity",
+                "nt_diversity_zscore",
                 "mean_contig_depth",
-                "relative_mean_depth",
+                "mean_depth_zscore",
                 "contributing_contigs",
             ],
         )
@@ -180,9 +199,9 @@ def write_per_taxon_diversity(
                     "scientific_name": taxon_info["scientific_name"],
                     "rank": taxon_info["rank"],
                     "nt_diversity": taxon_info["nt_diversity"],
-                    "relative_nt_diversity": taxon_info["relative_nt_diversity"],
+                    "nt_diversity_zscore": taxon_info["nt_diversity_zscore"],
                     "mean_contig_depth": taxon_info["mean_depth"],
-                    "relative_mean_depth": taxon_info["relative_mean_depth"],
+                    "mean_depth_zscore": taxon_info["mean_depth_zscore"],
                     "contributing_contigs": taxon_info["contributing_contigs"],
                 }
             )
