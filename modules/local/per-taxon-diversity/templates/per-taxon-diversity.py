@@ -137,11 +137,13 @@ def calculate_per_taxon_diversity(
         else 0.0
     )
 
-    if std_dev_diversity > 0:
         for taxon_info in taxon_dict.values():
-            taxon_info["nt_diversity_zscore"] = (
-                taxon_info["nt_diversity"] - mean_diversity
+            if std_dev_diversity > 0:
+                taxon_info["nt_diversity_zscore"] = (
+                    taxon_info["nt_diversity"] - mean_diversity
             ) / std_dev_diversity
+            else:
+                taxon_info["nt_diversity_zscore"] = ""
 
     mean_depth = (
         sum(taxon_info["mean_depth"] for taxon_info in taxon_dict.values())
@@ -156,11 +158,13 @@ def calculate_per_taxon_diversity(
         else 0.0
     )
 
-    if std_dev_depth > 0:
-        for taxon_info in taxon_dict.values():
+    for taxon_info in taxon_dict.values():
+        if std_dev_depth > 0:
             taxon_info["mean_depth_zscore"] = (
                 taxon_info["mean_depth"] - mean_depth
             ) / std_dev_depth
+        else:
+            taxon_info["mean_depth_zscore"] = ""
 
     return taxon_dict
 
