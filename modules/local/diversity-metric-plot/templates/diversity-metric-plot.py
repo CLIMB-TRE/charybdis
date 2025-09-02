@@ -54,8 +54,8 @@ def diversity_metric_plot(
     )
 
     fig.update_layout(
-        xaxis_title="Relative Mean Depth",
-        yaxis_title="Relative Nucleotide Diversity",
+        xaxis_title="Mean Depth Z-Score",
+        yaxis_title="Nucleotide Diversity Z-Score",
         legend_title="Scientific Name",
         template="plotly_white",
         yaxis=dict(type="linear", categoryorder="total ascending"),
