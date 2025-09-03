@@ -108,6 +108,13 @@
                     "fa_icon": "fas fa-file-alt",
                     "help_text": "The taxonomy dump is used to add lineage information to the taxonomic classifications. This may be a local directory or a tarball. If you do not provide this parameter, the pipeline will try to download the taxonomy dump from NCBI.",
                     "default": "https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdump.tar.gz"
+                },
+                "contig_min_length": {
+                    "type": "integer",
+                    "description": "Minimum length of a contig to be included in the per-taxon diversity analysis.",
+                    "help_text": "Contigs shorter than this length will be excluded from the analysis, this helps to reduce noise from very short contigs which tend to have much less accurate taxonomic classifications.",
+                    "default": 2000,
+                    "minimum": 1
                 }
             }
         },
