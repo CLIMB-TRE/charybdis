@@ -113,7 +113,7 @@
                     "type": "integer",
                     "description": "Minimum length of a contig to be included in the per-taxon diversity analysis.",
                     "help_text": "Contigs shorter than this length will be excluded from the analysis, this helps to reduce noise from very short contigs which tend to have much less accurate taxonomic classifications.",
-                    "default": 2000,
+                    "default": 1000,
                     "minimum": 1
                 }
             }
