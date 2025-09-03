@@ -3,17 +3,16 @@ process BANDAGE_IMAGE {
     label 'process_low'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/bandage:0.8.1--hc9558a2_2' :
-        'biocontainers/bandage:0.8.1--hc9558a2_2' }"
+    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
+        ? 'https://depot.galaxyproject.org/singularity/bandage:0.8.1--hc9558a2_2'
+        : 'biocontainers/bandage:0.8.1--hc9558a2_2'}"
 
     input:
     tuple val(meta), path(gfa)
 
     output:
     tuple val(meta), path('*.png'), emit: png
-    tuple val(meta), path('*.svg'), emit: svg
-    path  "versions.yml"          , emit: versions
+    path "versions.yml", emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -22,8 +21,7 @@ process BANDAGE_IMAGE {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    Bandage image $gfa ${prefix}.png $args
-    Bandage image $gfa ${prefix}.svg $args
+    Bandage image ${gfa} ${prefix}.png ${args}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
