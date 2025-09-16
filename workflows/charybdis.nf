@@ -14,6 +14,7 @@ include { KRAKEN2_KRAKEN2               } from '../modules/nf-core/kraken2/krake
 include { KRAKEN2_CLIENT                } from '../modules/local/kraken2-client/main'
 include { METABAT2_METABAT2             } from '../modules/nf-core/metabat2/metabat2/main'
 include { GTDBTK_CLASSIFYWF             } from '../modules/nf-core/gtdbtk/classifywf/main'
+include { GTDBTK_GTDBTONCBIMAJORITYVOTE } from '../modules/nf-core/gtdbtk/gtdbtoncbimajorityvote/main'
 include { BANDAGE_IMAGE                 } from '../modules/nf-core/bandage/image/main'
 include { UNTAR as UNTAR_KRAKEN         } from '../modules/nf-core/untar/main'
 include { UNTAR as UNTAR_TAXONOMY       } from '../modules/nf-core/untar/main'
@@ -225,6 +226,18 @@ workflow CHARYBDIS {
         [],
     )
     ch_versions = ch_versions.mix(GTDBTK_CLASSIFYWF.out.versions.first())
+
+    ch_gtdb_convert_input = GTDBTK_CLASSIFYWF.out.gtdb_outdir.map { meta, gtdb_outdir -> [meta, gtdb_outdir, []] }
+
+    gtdb_ar53 = gtdb_db.map { _version, path -> [[:], file("${path}/ar53_metadata.tsv.gz")] }
+    gtdb_bac120 = gtdb_db.map { _version, path -> [[:], file("${path}/bac120_metadata.tsv.gz")] }
+
+    GTDBTK_GTDBTONCBIMAJORITYVOTE(
+        ch_gtdb_convert_input,
+        gtdb_ar53,
+        gtdb_bac120,
+    )
+    ch_versions = ch_versions.mix(GTDBTK_GTDBTONCBIMAJORITYVOTE.out.versions.first())
 
     //
     // Assess bin quality with BUSCO
