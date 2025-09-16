@@ -13,9 +13,11 @@ include { ILLUMINA_ASSEMBLY             } from '../subworkflows/local/illumina_a
 include { KRAKEN2_KRAKEN2               } from '../modules/nf-core/kraken2/kraken2/main'
 include { KRAKEN2_CLIENT                } from '../modules/local/kraken2-client/main'
 include { METABAT2_METABAT2             } from '../modules/nf-core/metabat2/metabat2/main'
+include { GTDBTK_CLASSIFYWF             } from '../modules/nf-core/gtdbtk/classifywf/main'
 include { BANDAGE_IMAGE                 } from '../modules/nf-core/bandage/image/main'
 include { UNTAR as UNTAR_KRAKEN         } from '../modules/nf-core/untar/main'
 include { UNTAR as UNTAR_TAXONOMY       } from '../modules/nf-core/untar/main'
+include { UNTAR as UNTAR_GTDB           } from '../modules/nf-core/untar/main'
 include { AMRFINDERPLUS_UPDATE          } from '../modules/nf-core/amrfinderplus/update/main'
 include { AMRFINDERPLUS_RUN             } from '../modules/nf-core/amrfinderplus/run/main'
 include { TAXONKIT_LINEAGE              } from '../modules/nf-core/taxonkit/lineage/main'
@@ -26,6 +28,7 @@ include { DIVERSITY_METRICS             } from '../modules/local/diversity-metri
 include { MAPTIDE_PILEUP                } from '../modules/local/maptide/main'
 include { CALCULATE_PER_TAXON_DIVERSITY } from '../modules/local/per-taxon-diversity/main'
 include { DIVERSITY_METRIC_PLOT         } from '../modules/local/diversity-metric-plot/main'
+include { BUSCO_BUSCO                   } from '../modules/nf-core/busco/busco/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -200,6 +203,44 @@ workflow CHARYBDIS {
         ch_contigs.map { meta, contigs -> [meta, contigs, []] }
     )
     ch_versions = ch_versions.mix(METABAT2_METABAT2.out.versions.first())
+
+    //
+    // Prep the GTDB database
+    //
+    if (params.gtdb_db.endsWith(".tar.gz") || params.gtdb_db.endsWith(".tgz")) {
+        gtdb_tarball = file(params.gtdb_db, checkIfExists: true)
+        UNTAR_GTDB([[:], gtdb_tarball])
+        ch_versions = ch_versions.mix(UNTAR_GTDB.out.versions)
+
+        gtdb_db = UNTAR_GTDB.out.untar.map { _meta, path -> [params.gtdb_version, path] }
+    }
+    else {
+        gtdb_db = file(params.gtdb_path, checkIfExists: true).map { path -> [params.gtdb_version, path] }
+    }
+
+    GTDBTK_CLASSIFYWF(
+        METABAT2_METABAT2.out.fasta,
+        gtdb_db,
+        false,
+        [],
+    )
+    ch_versions = ch_versions.mix(GTDBTK_CLASSIFYWF.out.versions.first())
+
+    //
+    // Assess bin quality with BUSCO
+    //
+    store_dir = file(params.store_dir, checkIfExists: true)
+    busco_store_dir = file("${store_dir.toUriString()}/busco")
+
+    BUSCO_BUSCO(
+        METABAT2_METABAT2.out.fasta,
+        "genome",
+        "auto",
+        busco_store_dir,
+        [],
+        true,
+    )
+    ch_versions = ch_versions.mix(BUSCO_BUSCO.out.versions.first())
 
     //
     // Collate and save software versions
