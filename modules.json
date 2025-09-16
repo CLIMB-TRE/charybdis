@@ -45,6 +45,16 @@
                         "git_sha": "ce1a66562156776bb0dd1c1bb5640d368dadd4e6",
                         "installed_by": ["modules"]
                     },
+                    "genomad/download": {
+                        "branch": "master",
+                        "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
+                        "installed_by": ["modules"]
+                    },
+                    "genomad/endtoend": {
+                        "branch": "master",
+                        "git_sha": "ddb0d667cf6cdee3bab9497241de4bbf6b88d8cc",
+                        "installed_by": ["modules"]
+                    },
                     "gtdbtk/classifywf": {
                         "branch": "master",
                         "git_sha": "4c882420bb76b0b0343292d240eedf0a0eae3813",

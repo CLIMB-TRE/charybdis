@@ -30,6 +30,8 @@ include { MAPTIDE_PILEUP                } from '../modules/local/maptide/main'
 include { CALCULATE_PER_TAXON_DIVERSITY } from '../modules/local/per-taxon-diversity/main'
 include { DIVERSITY_METRIC_PLOT         } from '../modules/local/diversity-metric-plot/main'
 include { BUSCO_BUSCO                   } from '../modules/nf-core/busco/busco/main'
+include { GENOMAD_DOWNLOAD              } from '../modules/nf-core/genomad/download/main'
+include { GENOMAD_ENDTOEND              } from '../modules/nf-core/genomad/endtoend/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -254,6 +256,18 @@ workflow CHARYBDIS {
         true,
     )
     ch_versions = ch_versions.mix(BUSCO_BUSCO.out.versions.first())
+
+    //
+    // Search for mobile elements (plasmids, viruses, etc) with genomad
+    //
+    GENOMAD_DOWNLOAD()
+    ch_versions = ch_versions.mix(GENOMAD_DOWNLOAD.out.versions.first())
+
+    GENOMAD_ENDTOEND(
+        ch_contigs,
+        GENOMAD_DOWNLOAD.out.genomad_db,
+    )
+    ch_versions = ch_versions.mix(GENOMAD_ENDTOEND.out.versions.first())
 
     //
     // Collate and save software versions
