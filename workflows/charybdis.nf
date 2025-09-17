@@ -218,7 +218,7 @@ workflow CHARYBDIS {
         gtdb_db = UNTAR_GTDB.out.untar.map { _meta, path -> [params.gtdb_version, path] }
     }
     else {
-        gtdb_db = file(params.gtdb_path, checkIfExists: true).map { path -> [params.gtdb_version, path] }
+        gtdb_db = file(params.gtdb_db, checkIfExists: true).map { path -> [params.gtdb_version, path] }
     }
 
     GTDBTK_CLASSIFYWF(
@@ -230,7 +230,6 @@ workflow CHARYBDIS {
     ch_versions = ch_versions.mix(GTDBTK_CLASSIFYWF.out.versions.first())
 
     ch_gtdb_convert_input = GTDBTK_CLASSIFYWF.out.gtdb_outdir.map { meta, gtdb_outdir -> [meta, gtdb_outdir, []] }
-
     gtdb_ar53 = gtdb_db.map { _version, path -> [[:], file("${path}/ar53_metadata.tsv.gz")] }
     gtdb_bac120 = gtdb_db.map { _version, path -> [[:], file("${path}/bac120_metadata.tsv.gz")] }
 
