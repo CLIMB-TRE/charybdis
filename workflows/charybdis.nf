@@ -245,7 +245,9 @@ workflow CHARYBDIS {
     // Assess bin quality with BUSCO
     //
     store_dir = file(params.store_dir, checkIfExists: true)
-    busco_store_dir = file("${store_dir.toUriString()}/busco")
+    busco_store_dir = file(
+        "${store_dir.toUriString()}/busco_db"
+    )
 
     BUSCO_BUSCO(
         METABAT2_METABAT2.out.fasta,
