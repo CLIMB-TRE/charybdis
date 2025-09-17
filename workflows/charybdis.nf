@@ -218,7 +218,8 @@ workflow CHARYBDIS {
         gtdb_db = UNTAR_GTDB.out.untar.map { _meta, path -> [params.gtdb_version, path] }
     }
     else {
-        gtdb_db = file(params.gtdb_db, checkIfExists: true).map { path -> [params.gtdb_version, path] }
+        gtdb_db = Channel.of(file(params.gtdb_db, checkIfExists: true))
+            .map { path -> [params.gtdb_version, path] }
     }
 
     GTDBTK_CLASSIFYWF(
