@@ -249,11 +249,12 @@ workflow CHARYBDIS {
         "${store_dir.toUriString()}/busco_db"
     )
 
+    // Try to figure out how to store the busco db between runs later
     BUSCO_BUSCO(
         METABAT2_METABAT2.out.fasta,
         "genome",
         "auto",
-        store_dir,
+        [],
         [],
         true,
     )
