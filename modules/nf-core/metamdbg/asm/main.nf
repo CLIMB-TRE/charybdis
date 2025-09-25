@@ -1,6 +1,6 @@
 process METAMDBG_ASM {
     tag "${meta.id}"
-    label 'process_high'
+    label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
@@ -43,8 +43,8 @@ process METAMDBG_ASM {
     rm -r tmp/
 
     mv contigs.fasta.gz ${prefix}.contigs.fasta.gz
-    mv metaMDBG.log ${prefix}.metaMDBG.log
     mv assemblyGraph_k${params.metamdbg_k}*.noseq.gfa ${prefix}.assembly.gfa
+    mv metaMDBG.log ${prefix}.metaMDBG.log
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -57,6 +57,7 @@ process METAMDBG_ASM {
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}.metaMDBG.log
+    touch ${prefix}.assembly.gfa
     touch ${prefix}.contigs.fasta.gz
 
     cat <<-END_VERSIONS > versions.yml

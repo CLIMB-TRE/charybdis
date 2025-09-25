@@ -253,7 +253,7 @@ workflow CHARYBDIS {
         METABAT2_METABAT2.out.fasta,
         "genome",
         "auto",
-        busco_store_dir,
+        store_dir,
         [],
         true,
     )
