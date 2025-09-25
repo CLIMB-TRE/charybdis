@@ -225,6 +225,7 @@ workflow CHARYBDIS {
     GTDBTK_CLASSIFYWF(
         METABAT2_METABAT2.out.fasta,
         gtdb_db,
+        false,
     )
     ch_versions = ch_versions.mix(GTDBTK_CLASSIFYWF.out.versions.first())
 
