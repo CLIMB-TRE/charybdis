@@ -64,11 +64,6 @@ workflow CHARYBDIS {
     ch_contigs = ONT_ASSEMBLY.out.contigs.mix(ILLUMINA_ASSEMBLY.out.contigs)
     ch_graph = ONT_ASSEMBLY.out.gfa.mix(ILLUMINA_ASSEMBLY.out.graph)
 
-    ch_renamed_contigs = ch_contigs.map { meta, contigs ->
-        // Rename contigs to have .fasta.gz suffix
-        [meta, contigs.name.endsWith('.fasta.gz') ? contigs : contigs.renameSuffix('.fasta.gz')]
-    }
-
     if (!params.k2_remote) {
 
         if (!params.k2_local) {
@@ -91,7 +86,7 @@ workflow CHARYBDIS {
         }
 
         // Even if input was paired, contigs are always single-end -> don't modify
-        ch_k2_local_input = ch_renamed_contigs.map { meta, contigs -> [(meta - meta.subMap("single_end")) + [single_end: true], contigs] }
+        ch_k2_local_input = ch_contigs.map { meta, contigs -> [(meta - meta.subMap("single_end")) + [single_end: true], contigs] }
 
 
         KRAKEN2_KRAKEN2(
@@ -107,7 +102,7 @@ workflow CHARYBDIS {
     }
     else {
         KRAKEN2_CLIENT(
-            ch_renamed_contigs,
+            ch_contigs,
             params.k2_remote,
         )
         ch_versions = ch_versions.mix(KRAKEN2_CLIENT.out.versions.first())
@@ -137,7 +132,7 @@ workflow CHARYBDIS {
     )
     ch_versions = ch_versions.mix(TAXONKIT_LINEAGE.out.versions.first())
 
-    ch_contigs_branched = ch_renamed_contigs.branch { meta, _contigs ->
+    ch_contigs_branched = ch_contigs.branch { meta, _contigs ->
         ont: meta.platform == "ont"
         illumina: meta.platform == "illumina" || meta.platform == "illumina.se"
     }
@@ -197,7 +192,7 @@ workflow CHARYBDIS {
     AMRFINDERPLUS_UPDATE()
     ch_versions = ch_versions.mix(AMRFINDERPLUS_UPDATE.out.versions)
 
-    AMRFINDERPLUS_RUN(ch_renamed_contigs, AMRFINDERPLUS_UPDATE.out.db)
+    AMRFINDERPLUS_RUN(ch_contigs, AMRFINDERPLUS_UPDATE.out.db)
     ch_versions = ch_versions.mix(AMRFINDERPLUS_UPDATE.out.versions)
 
     // Generate a Bandage image of the assembly graph (it says it requires GFA but works fine with fastg)
@@ -208,7 +203,7 @@ workflow CHARYBDIS {
 
     // Bin the contigs with metabat2
     METABAT2_METABAT2(
-        ch_renamed_contigs.map { meta, contigs -> [meta, contigs, []] }
+        ch_contigs.map { meta, contigs -> [meta, contigs, []] }
     )
     ch_versions = ch_versions.mix(METABAT2_METABAT2.out.versions.first())
 
@@ -271,7 +266,7 @@ workflow CHARYBDIS {
     ch_versions = ch_versions.mix(GENOMAD_DOWNLOAD.out.versions.first())
 
     GENOMAD_ENDTOEND(
-        ch_renamed_contigs,
+        ch_contigs,
         GENOMAD_DOWNLOAD.out.genomad_db,
     )
     ch_versions = ch_versions.mix(GENOMAD_ENDTOEND.out.versions.first())
