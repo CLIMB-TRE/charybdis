@@ -64,6 +64,11 @@ workflow CHARYBDIS {
     ch_contigs = ONT_ASSEMBLY.out.contigs.mix(ILLUMINA_ASSEMBLY.out.contigs)
     ch_graph = ONT_ASSEMBLY.out.gfa.mix(ILLUMINA_ASSEMBLY.out.graph)
 
+    ch_contigs = ch_contigs.map { meta, contigs ->
+        // Rename contigs to have .fasta.gz suffix
+        [meta, contigs.name.endsWith('.fasta.gz') ? contigs : contigs.renameSuffix('.fasta.gz')]
+    }
+
     if (!params.k2_remote) {
 
         if (!params.k2_local) {
