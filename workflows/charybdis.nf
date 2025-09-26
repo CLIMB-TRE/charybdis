@@ -230,8 +230,8 @@ workflow CHARYBDIS {
     ch_versions = ch_versions.mix(GTDBTK_CLASSIFYWF.out.versions.first())
 
     ch_gtdb_convert_input = GTDBTK_CLASSIFYWF.out.gtdb_outdir.map { meta, gtdb_outdir -> [meta, gtdb_outdir, []] }
-    gtdb_ar53 = gtdb_db.map { _version, path -> [[:], file("${path}/ar53_metadata.tsv.gz")] }
-    gtdb_bac120 = gtdb_db.map { _version, path -> [[:], file("${path}/bac120_metadata.tsv.gz")] }
+    gtdb_ar53 = gtdb_db.map { _version, path -> [[:], file("${path}/taxonomy/ar53_*.tsv.gz")] }
+    gtdb_bac120 = gtdb_db.map { _version, path -> [[:], file("${path}/taxonomy/bac120_*.tsv.gz")] }
 
     GTDBTK_GTDBTONCBIMAJORITYVOTE(
         ch_gtdb_convert_input,
