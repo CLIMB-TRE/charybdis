@@ -218,7 +218,8 @@ workflow CHARYBDIS {
         gtdb_db = UNTAR_GTDB.out.untar.map { _meta, path -> [params.gtdb_version, path] }
     }
     else {
-        gtdb_db = [params.gtdb_version, file(params.gtdb_db, checkIfExists: true)]
+        gtdb_val = file(params.gtdb_db, checkIfExists: true)
+        gtdb_db = [gtdb_val.simpleName, gtdb_val]
     }
 
     GTDBTK_CLASSIFYWF(
@@ -227,10 +228,6 @@ workflow CHARYBDIS {
         false,
     )
     ch_versions = ch_versions.mix(GTDBTK_CLASSIFYWF.out.versions.first())
-
-    ch_gtdb_convert_input = GTDBTK_CLASSIFYWF.out.gtdb_outdir.map { meta, gtdb_outdir -> [meta, gtdb_outdir, []] }
-    gtdb_ar53 = gtdb_db.map { _version, path -> [[:], file("${path}/taxonomy/ar53_*.tsv.gz")] }
-    gtdb_bac120 = gtdb_db.map { _version, path -> [[:], file("${path}/taxonomy/bac120_*.tsv.gz")] }
 
     // GTDBTK_GTDBTONCBIMAJORITYVOTE(
     //     ch_gtdb_convert_input,
