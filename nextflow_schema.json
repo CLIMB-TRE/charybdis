@@ -135,6 +135,12 @@
                     "help_text": "Contigs shorter than this length will be excluded from the analysis, this helps to reduce noise from very short contigs which tend to have much less accurate taxonomic classifications.",
                     "default": 1000,
                     "minimum": 1
+                },
+                "skip_binning": {
+                    "type": "boolean",
+                    "description": "Skip the binning step of the pipeline.",
+                    "fa_icon": "fas fa-forward",
+                    "help_text": "If set to true, the binning step of the pipeline will be skipped. This may be useful if you are only interested in the contig-level analysis."
                 }
             }
         },
