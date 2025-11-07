@@ -207,6 +207,10 @@ workflow CHARYBDIS {
             ch_contigs.map { meta, contigs -> [meta, contigs, []] }
         )
         ch_versions = ch_versions.mix(METABAT2_METABAT2.out.versions.first())
+        ch_bins = METABAT2_METABAT2.out.fasta
+    }
+    else {
+        ch_bins = Channel.empty()
     }
 
 
@@ -226,7 +230,7 @@ workflow CHARYBDIS {
     }
 
     GTDBTK_CLASSIFYWF(
-        METABAT2_METABAT2.out.fasta,
+        ch_bins,
         gtdb_db,
         false,
     )
@@ -249,7 +253,7 @@ workflow CHARYBDIS {
 
     // Try to figure out how to store the busco db between runs later
     BUSCO_BUSCO(
-        METABAT2_METABAT2.out.fasta,
+        ch_bins,
         "genome",
         "auto",
         [],
