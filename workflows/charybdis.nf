@@ -172,7 +172,7 @@ workflow CHARYBDIS {
     ch_versions = ch_versions.mix(MINIMAP2_ALIGN.out.versions.first())
 
     ch_bams_with_index = MINIMAP2_ALIGN.out.bam
-        .join(MINIMAP2_ALIGN.out.bai)
+        .join(MINIMAP2_ALIGN.out.index)
         .mix(
             BWAMEM2_MEM.out.bam.join(SAMTOOLS_INDEX.out.bai)
         )
@@ -182,7 +182,7 @@ workflow CHARYBDIS {
 
     // Generate diversity metrics for the contigs
     // These processes literally just use Python standard library, so no need for versions files (nobody cares about Python versions)
-    DIVERSITY_METRICS(MAPTIDE_PILEUP.out.pileup_tsv)
+    DIVERSITY_METRICS(PERBASE.out.tsv)
 
     ch_lineages_and_diversity = TAXONKIT_LINEAGE.out.tsv
         .map { meta, tsv -> [meta.subMap("id", "platform"), tsv] }
