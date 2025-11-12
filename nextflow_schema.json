@@ -144,6 +144,21 @@
                 }
             }
         },
+        "megahit_settings": {
+            "title": "MEGAHIT settings",
+            "type": "object",
+            "fa_icon": "fas fa-code-branch",
+            "description": "Parameters which impact how the MEGAHIT assembler runs.",
+            "properties": {
+                "megahit_min_contig_len": {
+                    "type": "integer",
+                    "description": "Minimum length of contigs to be assembled by MEGAHIT.",
+                    "default": 1000,
+                    "minimum": 1,
+                    "fa_icon": "fas fa-text-height"
+                }
+            }
+        },
         "miniasm_settings": {
             "title": "Miniasm settings",
             "type": "object",
