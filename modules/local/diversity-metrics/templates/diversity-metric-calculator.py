@@ -124,7 +124,6 @@ def run(args):
                 "shannon_entropy",
             ],
             lineterminator="\\n",
-            # lineterminator="\n",
         )
         writer.writeheader()
 
