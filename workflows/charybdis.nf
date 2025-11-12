@@ -176,6 +176,9 @@ workflow CHARYBDIS {
         .mix(
             BWAMEM2_MEM.out.bam.join(SAMTOOLS_INDEX.out.bai)
         )
+        .map { meta, bam, bai ->
+            [meta, bam, bai, []]
+        }
 
     PERBASE(ch_bams_with_index, [[:], [], []])
     ch_versions = ch_versions.mix(PERBASE.out.versions.first())
