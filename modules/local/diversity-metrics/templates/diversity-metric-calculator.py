@@ -12,7 +12,7 @@ def calculate_pairwise_difference(
     Calculate the nucleotide diversity (π) for a given chromosome position.
     """
 
-    to_check = ("a", "c", "g", "t")
+    to_check = ("A", "C", "G", "T", "INS", "DEL")
 
     # Calculate the total number of alleles
     n = sum(
@@ -20,7 +20,7 @@ def calculate_pairwise_difference(
             int(row[field])
             for field in to_check
             if int(row[field]) >= min_allele_depth
-            and (int(row[field]) / int(row["cov"])) >= min_allele_frequency
+            and (int(row[field]) / int(row["DEPTH"])) >= min_allele_frequency
         ]
     )
 
@@ -30,7 +30,7 @@ def calculate_pairwise_difference(
     # Calculate the denominator for the nucleotide diversity formula
     denominator = n * (n - 1)
     # If the denominator is 0, return None
-    if denominator == 0 or row["cov"] == "0":
+    if denominator == 0 or row["DEPTH"] == "0":
         return None
 
     # Calculate the allele frequency
@@ -39,7 +39,7 @@ def calculate_pairwise_difference(
             (int(row[field]) * (int(row[field]) - 1))
             for field in to_check
             if int(row[field]) >= min_allele_depth
-            and (int(row[field]) / int(row["cov"])) >= min_allele_frequency
+            and (int(row[field]) / int(row["DEPTH"])) >= min_allele_frequency
         ]
     )
 
@@ -55,7 +55,7 @@ def calculate_shannon_entropy(
     Calculate the Shannon entropy for a given chromosome position.
     """
 
-    to_check = ("a", "c", "g", "t", "ds")
+    to_check = ("A", "C", "G", "T", "DEL", "INS")
 
     # Calculate the total number of alleles
     n = sum([int(row[field]) for field in to_check])
@@ -82,24 +82,19 @@ def run(args):
     entropy_arrays = {}
     depth_arrays = {}
 
-    to_check = ("a", "c", "g", "t", "ds")
-
     with open(args.tsv, "r") as tsv_file:
-        # Headers -> chrom   pos     ins     cov     a       c       g       t       ds      n
+        # Headers -> REF     POS     DEPTH   A       C       G       T       N       R       Y       S       W       K       M       INS     DEL     REF_SKIP        FAIL    COUNT_OF_MATE_RESOUTIONS       NEAR_MAX_DEPTH
 
         reader = csv.DictReader(tsv_file, delimiter="\\t")
+        # reader = csv.DictReader(tsv_file, delimiter="\t")
 
         for row in reader:
 
-            # TODO support insertions
-            if int(row["ins"]) > 0:
-                continue
-
-            depth_arrays.setdefault(row["chrom"], [])
-            depth_arrays[row["chrom"]].append(int(row["cov"]))
+            depth_arrays.setdefault(row["REF"], [])
+            depth_arrays[row["REF"]].append(int(row["DEPTH"]))
 
             # Skip if the coverage is 0
-            if row["cov"] == "0":
+            if row["DEPTH"] == "0":
                 continue
 
             pairwise_difference = calculate_pairwise_difference(
@@ -109,14 +104,14 @@ def run(args):
                 row, args.min_cov, args.min_allele_depth, args.min_allele_frequency
             )
 
-            pairwise_difference_arrays.setdefault(row["chrom"], [])
-            entropy_arrays.setdefault(row["chrom"], [])
+            pairwise_difference_arrays.setdefault(row["REF"], [])
+            entropy_arrays.setdefault(row["REF"], [])
 
             if pairwise_difference is not None:
-                pairwise_difference_arrays[row["chrom"]].append(pairwise_difference)
+                pairwise_difference_arrays[row["REF"]].append(pairwise_difference)
 
             if entropy is not None:
-                entropy_arrays[row["chrom"]].append(entropy)
+                entropy_arrays[row["REF"]].append(entropy)
 
     with open(f"{args.sample}.diversity_metrics.csv", "w") as f:
         writer = csv.DictWriter(
@@ -129,6 +124,7 @@ def run(args):
                 "shannon_entropy",
             ],
             lineterminator="\\n",
+            # lineterminator="\n",
         )
         writer.writeheader()
 
@@ -198,6 +194,6 @@ if __name__ == "__main__":
     #     default=0.0,
     #     help="Minimum allele frequency to consider an alternative allele.",
     # )
-    # args = parser.parse_args()
+    args = parser.parse_args()
 
     run(args)

@@ -25,8 +25,9 @@ include { TAXONKIT_LINEAGE              } from '../modules/nf-core/taxonkit/line
 include { MINIMAP2_ALIGN                } from '../modules/nf-core/minimap2/align/main'
 include { BWAMEM2_INDEX                 } from '../modules/nf-core/bwamem2/index/main'
 include { BWAMEM2_MEM                   } from '../modules/nf-core/bwamem2/mem/main'
+include { SAMTOOLS_INDEX                } from '../modules/nf-core/samtools/index/main'
 include { DIVERSITY_METRICS             } from '../modules/local/diversity-metrics/main'
-include { MAPTIDE_PILEUP                } from '../modules/local/maptide/main'
+include { PERBASE                       } from '../modules/nf-core/perbase/main'
 include { CALCULATE_PER_TAXON_DIVERSITY } from '../modules/local/per-taxon-diversity/main'
 include { DIVERSITY_METRIC_PLOT         } from '../modules/local/diversity-metric-plot/main'
 include { BUSCO_BUSCO                   } from '../modules/nf-core/busco/busco/main'
@@ -157,6 +158,9 @@ workflow CHARYBDIS {
     )
     ch_versions = ch_versions.mix(BWAMEM2_MEM.out.versions.first())
 
+    SAMTOOLS_INDEX(BWAMEM2_MEM.out.bam)
+    ch_versions = ch_versions.mix(SAMTOOLS_INDEX.out.versions.first())
+
     ch_minimap2_input = ch_input.ont
         .join(ch_contigs_branched.ont)
         .multiMap { meta, reads1, _reads2, contigs ->
@@ -167,10 +171,14 @@ workflow CHARYBDIS {
     MINIMAP2_ALIGN(ch_minimap2_input.reads, ch_minimap2_input.contig_fasta, true, "bai", true, false)
     ch_versions = ch_versions.mix(MINIMAP2_ALIGN.out.versions.first())
 
-    ch_contig_read_bams = BWAMEM2_MEM.out.bam.mix(MINIMAP2_ALIGN.out.bam)
+    ch_bams_with_index = MINIMAP2_ALIGN.out.bam
+        .join(MINIMAP2_ALIGN.out.bai)
+        .mix(
+            BWAMEM2_MEM.out.bam.join(SAMTOOLS_INDEX.out.bai)
+        )
 
-    MAPTIDE_PILEUP(ch_contig_read_bams)
-    ch_versions = ch_versions.mix(MAPTIDE_PILEUP.out.versions.first())
+    PERBASE(ch_bams_with_index, [[:], [], []])
+    ch_versions = ch_versions.mix(PERBASE.out.versions.first())
 
     // Generate diversity metrics for the contigs
     // These processes literally just use Python standard library, so no need for versions files (nobody cares about Python versions)
