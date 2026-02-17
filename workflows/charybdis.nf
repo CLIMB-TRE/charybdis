@@ -228,24 +228,28 @@ workflow CHARYBDIS {
     //
     // Prep the GTDB database
     //
-    if (params.gtdb_db.endsWith(".tar.gz") || params.gtdb_db.endsWith(".tgz")) {
-        gtdb_tarball = file(params.gtdb_db, checkIfExists: true)
-        UNTAR_GTDB([[:], gtdb_tarball])
-        ch_versions = ch_versions.mix(UNTAR_GTDB.out.versions)
+    if (params.run_gtdb_tk) {
+        if (params.gtdb_db.endsWith(".tar.gz") || params.gtdb_db.endsWith(".tgz")) {
+            gtdb_tarball = file(params.gtdb_db, checkIfExists: true)
+            UNTAR_GTDB([[:], gtdb_tarball])
+            ch_versions = ch_versions.mix(UNTAR_GTDB.out.versions)
 
-        gtdb_db = UNTAR_GTDB.out.untar.map { _meta, path -> [params.gtdb_version, path] }
-    }
-    else {
-        gtdb_val = file(params.gtdb_db, checkIfExists: true)
-        gtdb_db = [gtdb_val.simpleName, gtdb_val]
+            gtdb_db = UNTAR_GTDB.out.untar.map { _meta, path -> [params.gtdb_version, path] }
+        }
+        else {
+            gtdb_val = file(params.gtdb_db, checkIfExists: true)
+            gtdb_db = [gtdb_val.simpleName, gtdb_val]
+        }
+
+        GTDBTK_CLASSIFYWF(
+            ch_bins,
+            gtdb_db,
+            false,
+        )
+        ch_versions = ch_versions.mix(GTDBTK_CLASSIFYWF.out.versions.first())
+
     }
 
-    GTDBTK_CLASSIFYWF(
-        ch_bins,
-        gtdb_db,
-        false,
-    )
-    ch_versions = ch_versions.mix(GTDBTK_CLASSIFYWF.out.versions.first())
 
     // GTDBTK_GTDBTONCBIMAJORITYVOTE(
     //     ch_gtdb_convert_input,
