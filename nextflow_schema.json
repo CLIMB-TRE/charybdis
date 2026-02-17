@@ -204,8 +204,8 @@
             "fa_icon": "fas fa-cut",
             "description": "Parameters which impact how the Chopper preprocessor runs.",
             "required": [
-                "chopper_min_length",
-                "chopper_min_quality"
+                "ont_min_length",
+                "ont_min_quality"
             ],
             "properties": {
                 "ont_min_quality": {
