@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-import sys
+import gzip
 import csv
 import math
 
@@ -82,7 +82,7 @@ def run(args):
     entropy_arrays = {}
     depth_arrays = {}
 
-    with open(args.tsv, "r") as tsv_file:
+    with gzip.open(args.tsv, "rt") as tsv_file:
         # Headers -> REF     POS     DEPTH   A       C       G       T       N       R       Y       S       W       K       M       INS     DEL     REF_SKIP        FAIL    COUNT_OF_MATE_RESOUTIONS       NEAR_MAX_DEPTH
 
         reader = csv.DictReader(tsv_file, delimiter="\\t")
