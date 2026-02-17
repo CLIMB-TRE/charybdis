@@ -193,6 +193,6 @@ if __name__ == "__main__":
     #     default=0.0,
     #     help="Minimum allele frequency to consider an alternative allele.",
     # )
-    args = parser.parse_args()
+    # args = parser.parse_args()
 
     run(args)
